@@ -78,35 +78,21 @@ def Itr_Lim_DFS(graph, S, G, max_depth, step):
         if Limited_DFS(graph, S, G, counter, 0, visited=[], path=[]):
             return Limited_DFS(graph, S, G, counter, 0, visited=[], path=[])
         counter = counter + step
-'''
-def Uniform_Cost_search(graph,S,G,visited=[],path=[]):
+
+
+def Uniform_Cost_search(graph,S,G):
     graph.makeDS()
     dist = graph.vertix_list
-    nV=graph.number_verticies
+    myGraph = graph.graphDS
+    print(myGraph)
     for i in dist:
-        dist[i]=1e7
-        print(dist)
-    dist[S]=0
-    PQ = []
-    for i in range (V):
-        u = -1
-        for j in graph.vertix_list:
-'''
+        dist[i]=1e6
+    shortest_path ={}
+    previous_nodes={}
+    dist.sort(reverse=True)
+    PQ=[]
+    PQ[G]=0
+    for i in myGraph:
+        dist[0]
 
 
-
-
-
-
-'''
-gEX = {
-    '1': ['2', '3', '4'],
-    '2': ['5', '6'],
-    '5': ['9', '10'],
-    '4': ['7', '8'],
-    '7': ['11', '12']
-}
-# graph, S, G,limit,level=0,visited=[],path=[]
-print(Limited_DFS(gEX, '1', '6', 2, 0, visited=[], path=[]))
-print(DFS(gEX, '1', '6', visited=[], path=[]))
-'''

@@ -286,7 +286,7 @@ class Ui_MainWindow(object):
     def color_path(self, path):
         temp = Network()
         temp.options.edges.inherit_colors(False)
-        print("zzzzzzzzzzzzzzzzzzzzzzz")
+        #print("zzzzzzzzzzzzzzzzzzzzzzz")
         print(path)
         for i in path:
             temp.add_node(i,color='#00ff1e')
@@ -310,7 +310,11 @@ class Ui_MainWindow(object):
 
     def UC_clicked(self):
         if G.makeDS(G.graph):
-            pass
+            print(self.Start_line_edit.text(), "Start")
+            start =self.Start_line_edit.text()
+            print(self.goal_lineEdit.text(), "Goal")
+            goal = self.goal_lineEdit.text()
+            Algo.Uniform_Cost_search(G.graph,start,goal)
 
 
 
