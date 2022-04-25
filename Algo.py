@@ -1,6 +1,7 @@
 import queue
 import Graph
 
+
 def DFS(graph, S, G, visited=[], path=[]):
     print(S)
     if S not in graph:
@@ -80,19 +81,49 @@ def Itr_Lim_DFS(graph, S, G, max_depth, step):
         counter = counter + step
 
 
-def Uniform_Cost_search(graph,S,G):
-    graph.makeDS()
-    dist = graph.vertix_list
-    myGraph = graph.graphDS
-    print(myGraph)
-    for i in dist:
-        dist[i]=1e6
-    shortest_path ={}
+def Uniform_Cost_search(graph,graph_nodes,S):
+    print("INSIDE ALGO")
+    mygraph = graph
+    print("IA GRAPH MADE")
+    unvisited = graph_nodes
+    print("IA GRAPH unvisited")
+    #cost of visiting node
+    shortest_path={}
+    #shortest path to node #road
     previous_nodes={}
-    dist.sort(reverse=True)
-    PQ=[]
-    PQ[G]=0
-    for i in myGraph:
-        dist[0]
+    curr_min_node = None
+    print("IA GRAPH 1")
+
+    for i in unvisited:
+        shortest_path[i]=1e6
+    shortest_path[S]=0
+    print(1)
+    print(2)
+    while unvisited:
+        print(3)
+        current_min_node = None
+        for node in unvisited:  # Iterate over the nodes
+            if current_min_node == None:
+                current_min_node = node
+            elif shortest_path[node] < shortest_path[current_min_node]:
+                current_min_node = node
+        print(4)
+        neighbors = mygraph[current_min_node]
+        for neighbor in neighbors:
+            key = neighbor[0]
+            val = neighbor[1]
+            print(key, val, " KEY/VAL")
+            tentative_value = shortest_path[current_min_node] + val
+            if tentative_value < shortest_path[key]:
+                shortest_path[key] = tentative_value
+                # We also update the best path to the current node
+                previous_nodes[key] = current_min_node
+        unvisited.remove(current_min_node)
+        print(5)
+    print(6)
+    return (previous_nodes,shortest_path)
 
 
+# sorting algorithm
+def Sort(sub_li):
+    return (sorted(sub_li, key=lambda x: x[1]))

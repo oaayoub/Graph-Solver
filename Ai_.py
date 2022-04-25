@@ -309,12 +309,14 @@ class Ui_MainWindow(object):
         main.g.save_graph("graph.html")
 
     def UC_clicked(self):
-        if G.makeDS(G.graph):
+        print("UC CLICKED")
+        if G.makeDS(G.graph,self.Directed_Button.isChecked()):
+            print("DS MADE")
             print(self.Start_line_edit.text(), "Start")
             start =self.Start_line_edit.text()
             print(self.goal_lineEdit.text(), "Goal")
             goal = self.goal_lineEdit.text()
-            Algo.Uniform_Cost_search(G.graph,start,goal)
+            print(Algo.Uniform_Cost_search(G.graphDS,G.unvisited,start))
 
 
 
