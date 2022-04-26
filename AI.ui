@@ -6,12 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>896</width>
+    <width>1029</width>
     <height>648</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <kerning>true</kerning>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
+  </property>
+  <property name="toolTip">
+   <string/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPlainTextEdit" name="TextEntry">
@@ -27,6 +35,12 @@
      <font>
       <pointsize>12</pointsize>
      </font>
+    </property>
+    <property name="toolTip">
+     <string>ex-&gt;2 3 1 -&gt; Node 2 Node 3 Edge 1</string>
+    </property>
+    <property name="statusTip">
+     <string>ex-&gt;2 3 1 -&gt; Node 2 Node 3 Edge 1</string>
     </property>
     <property name="plainText">
      <string>2 3 1
@@ -50,7 +64,7 @@
    <widget class="QPushButton" name="Directed_Button">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>10</y>
       <width>111</width>
       <height>23</height>
@@ -136,6 +150,9 @@
       <height>20</height>
      </rect>
     </property>
+    <property name="statusTip">
+     <string>Start Node</string>
+    </property>
    </widget>
    <widget class="QLineEdit" name="goal_lineEdit">
     <property name="geometry">
@@ -145,6 +162,9 @@
       <width>41</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="statusTip">
+     <string>Goal Node</string>
     </property>
    </widget>
    <widget class="QLabel" name="Start_label">
@@ -332,11 +352,108 @@
       <height>20</height>
      </rect>
     </property>
+    <property name="statusTip">
+     <string>Cost will show infinity if there is no such route </string>
+    </property>
+    <property name="whatsThis">
+     <string/>
+    </property>
+    <property name="inputMethodHints">
+     <set>Qt::ImhNone</set>
+    </property>
     <property name="readOnly">
      <bool>true</bool>
     </property>
+    <property name="placeholderText">
+     <string extracomment="cost will be shown here"/>
+    </property>
     <property name="clearButtonEnabled">
      <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="Heuristic_Text_entry">
+    <property name="geometry">
+     <rect>
+      <x>890</x>
+      <y>40</y>
+      <width>131</width>
+      <height>511</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="toolTip">
+     <string>format-&gt;Node Heuristic</string>
+    </property>
+    <property name="statusTip">
+     <string>Node heuristic ex:A 5</string>
+    </property>
+    <property name="tabChangesFocus">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Astar_button">
+    <property name="geometry">
+     <rect>
+      <x>890</x>
+      <y>560</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>A* search</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Greedy_button">
+    <property name="geometry">
+     <rect>
+      <x>890</x>
+      <y>590</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Greedy search</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="FormatLabel">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>40</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Node Node Edge</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="Heuristic_list">
+    <property name="geometry">
+     <rect>
+      <x>910</x>
+      <y>10</y>
+      <width>101</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Yu Gothic UI</family>
+      <pointsize>11</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+      <underline>false</underline>
+     </font>
+    </property>
+    <property name="text">
+     <string>Heuristics list</string>
     </property>
    </widget>
   </widget>

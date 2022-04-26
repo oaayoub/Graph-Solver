@@ -4,6 +4,7 @@ class GraphDS:
     weighted = True
     adj_list=[]
     unvisited =[]
+    heuristic_dict ={}
     def __init__(self,Default):
         self.graph=[]
         with open("Default.txt") as text:
@@ -49,7 +50,14 @@ class GraphDS:
                 if len(i) < 3:
                     print(i, "LESS")
                     self.weighted = False
-                    return {}
+                    if  len(i)==2:
+                        self.graphDS.setdefault(i[0], []).append((i[1], 999999))
+                        if i[0] not in self.unvisited:
+                            self.unvisited.append(i[0])
+                        if i[1] not in self.unvisited:
+                            self.unvisited.append(i[1])
+                        continue
+
                 print(i, "OKAY")
                 self.graphDS.setdefault(i[0], []).append((i[1], int(i[2])))
                 if i[0] not in self.unvisited:
@@ -62,7 +70,15 @@ class GraphDS:
                 if len(i) < 3:
                     print(i, "LESS")
                     self.weighted = False
-                    return {}
+                    if  len(i)==2:
+                        self.graphDS.setdefault(i[0], []).append((i[1], 999999))
+                        self.graphDS.setdefault(i[1], []).append((i[0], 999999))
+                        if i[0] not in self.unvisited:
+                            self.unvisited.append(i[0])
+                        if i[1] not in self.unvisited:
+                            self.unvisited.append(i[1])
+                        continue
+
                 print(i, "OKAY")
                 self.graphDS.setdefault(i[0],[]).append((i[1], int(i[2])))
                 self.graphDS.setdefault(i[1],[]).append((i[0], int(i[2])))
@@ -76,6 +92,23 @@ class GraphDS:
         print("First Done")
         print(self.graphDS)
         return True
+    def makeHeuristicsList(self,lines):
+        self.heuristic_dict={}
+        for i in lines:
+            i = i.rstrip()
+            i = i.lstrip()
+            i = i.split()
+            print(i)
+            if len(i)>2:
+                return False
+            key =i[0]
+            value =i[1]
+            self.heuristic_dict[key]=value
+
+
+
+
+
 
 
 

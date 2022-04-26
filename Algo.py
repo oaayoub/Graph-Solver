@@ -1,7 +1,4 @@
-import queue
-import Graph
-
-
+import collections
 def DFS(graph, S, G, visited=[], path=[]):
     print(S)
     if S not in graph:
@@ -94,33 +91,36 @@ def Uniform_Cost_search(graph,graph_nodes,S):
     previous_nodes={}
     curr_min_node = None
     print("IA GRAPH 1")
-
+    #initiating shortest path values
     for i in unvisited:
         shortest_path[i]=1e6
     shortest_path[S]=0
     print(1)
     print(2)
+    #visiting all nodes
     while unvisited:
         print(3)
         current_min_node = None
-        for node in unvisited:  # Iterate over the nodes
+        for node in unvisited:  # Iterate over the nodes to get min node
             if current_min_node == None:
                 current_min_node = node
             elif shortest_path[node] < shortest_path[current_min_node]:
                 current_min_node = node
         print(4)
         print("current node",current_min_node)
+        # if graph is directed and node to have outhoing edges
         if not (current_min_node in mygraph):
             print(current_min_node,"NOT")
             unvisited.remove(current_min_node)
             continue
-
+        #if node have only one outgoing edge it puts it in list
         if not isinstance(mygraph[current_min_node], list):
             neighbors = [mygraph[current_min_node]]
         else:
             neighbors = mygraph[current_min_node]
         print(neighbors,"NEIGHBORS")
         print(5)
+        #update the values of children
         for neighbor in neighbors:
             print("neighbour", neighbor)
             print(6)
@@ -138,12 +138,15 @@ def Uniform_Cost_search(graph,graph_nodes,S):
         print(9)
     print(10)
     print(shortest_path)
+    print(previous_nodes)
     return (previous_nodes,shortest_path)
 
 
 # sorting algorithm for list of tuples according to value
 def Sort(sub_li):
     return (sorted(sub_li, key=lambda x: x[1]))
+def Sort_2(sub_li):
+    return (sorted(sub_li, key=lambda x: x[2]))
 
 def dijkstra_result(parent_map,shortest_path,start,goal):
     path = []
@@ -154,4 +157,54 @@ def dijkstra_result(parent_map,shortest_path,start,goal):
     path.append(start)
     path.reverse()
     return path
+
+def A_star_search(graph,graph_nodes,S):
+    pass
+
+def greedy_Search(S,G,heuristics,DS):
+    print("inside Greedy FUNC")
+    outgoingedes = {}
+    print(DS,"DS")
+    for i in DS:
+        print(i,"i in DS")
+        for j in DS[i]:
+            print(j,"of DS of i")
+            outgoingedes.setdefault(i,[]).append((j[0]))
+
+
+    visited=[S]
+    print(outgoingedes,"outgoing edges")
+    print(S,"S")
+    print(heuristics,"heu")
+    print(heuristics[S],"heu[S]")
+    print("G1")
+    Q = [(S,heuristics[S],[S])]
+    while Q:
+        Sort(Q)
+        print("Sorted",Q)
+        s,val,path=Q.pop(0)
+        visited.append(s)
+        print(visited,"VISITED")
+        for i in outgoingedes[s]:
+            print(i,"i in greedy")
+            if i in visited:
+                continue
+            Q.append((i,heuristics[i],path+[i]))
+            if i == G:
+                print(i,path+[i],"FOUND")
+                return path+[i]
+        print(Q,"Q after children")
+
+
+
+
+
+
+
+
+
+
+
+
+
 

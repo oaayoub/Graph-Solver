@@ -21,7 +21,7 @@ class Ui_MainWindow(object):
         file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "graph.html"))
         local_url = QtCore.QUrl.fromLocalFile(file_path)
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(896, 648)
+        MainWindow.resize(1027, 647)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.TextEntry = QtWidgets.QPlainTextEdit(self.centralwidget)
@@ -128,6 +128,33 @@ class Ui_MainWindow(object):
         self.Cost_line_edit.setReadOnly(True)
         self.Cost_line_edit.setClearButtonEnabled(False)
         self.Cost_line_edit.setObjectName("Cost_line_edit")
+        self.Heuristic_Text_entry = QtWidgets.QPlainTextEdit(self.centralwidget)
+        self.Heuristic_Text_entry.setGeometry(QtCore.QRect(890, 40, 131, 511))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.Heuristic_Text_entry.setFont(font)
+        self.Heuristic_Text_entry.setTabChangesFocus(False)
+        self.Heuristic_Text_entry.setObjectName("Heuristic_Text_entry")
+        self.Astar_button = QtWidgets.QPushButton(self.centralwidget)
+        self.Astar_button.setGeometry(QtCore.QRect(890, 560, 131, 31))
+        self.Astar_button.setObjectName("Astar_button")
+        self.Greedy_button = QtWidgets.QPushButton(self.centralwidget)
+        self.Greedy_button.setGeometry(QtCore.QRect(890, 590, 131, 31))
+        self.Greedy_button.setObjectName("Greedy_button")
+        self.FormatLabel = QtWidgets.QLabel(self.centralwidget)
+        self.FormatLabel.setGeometry(QtCore.QRect(190, 40, 81, 21))
+        self.FormatLabel.setObjectName("FormatLabel")
+        self.Heuristic_list = QtWidgets.QLabel(self.centralwidget)
+        self.Heuristic_list.setGeometry(QtCore.QRect(910, 10, 101, 21))
+        font = QtGui.QFont()
+        font.setFamily("Yu Gothic UI")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setUnderline(False)
+        font.setWeight(75)
+        self.Heuristic_list.setFont(font)
+        self.Heuristic_list.setObjectName("Heuristic_list")
+
         self.retranslateUi(MainWindow)
         font = QtGui.QFont()
         font.setPointSize(12)
@@ -138,12 +165,16 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.TextEntry.setToolTip(_translate("MainWindow", "ex->2 3 1 -> Node 2 Node 3 Edge 1"))
+        self.TextEntry.setStatusTip(_translate("MainWindow", "ex->2 3 1 -> Node 2 Node 3 Edge 1"))
         self.TextEntry.setPlainText(_translate("MainWindow", "2 3 1\n" "1 2\n" ""))
         self.Directed_Button.setText(_translate("MainWindow", "Directed"))
         self.Physics_Button.setText(_translate("MainWindow", "Physics"))
         self.UniformCostButton.setText(_translate("MainWindow", "Uniform cost search"))
         self.DFS_Button.setText(_translate("MainWindow", "DFS"))
         self.BFSButton.setText(_translate("MainWindow", "BFS"))
+        self.Start_line_edit.setStatusTip(_translate("MainWindow", "Start Node"))
+        self.goal_lineEdit.setStatusTip(_translate("MainWindow", "Goal Node"))
         self.Start_label.setText(_translate("MainWindow", "Start"))
         self.Goal_label.setText(_translate("MainWindow", "Goal"))
         self.iterative_deepening_Button.setText(_translate("MainWindow", "Iterative deepening"))
@@ -152,6 +183,13 @@ class Ui_MainWindow(object):
         self.Limit_iterative_deepening_label.setText(_translate("MainWindow", "Max Depth:"))
         self.iterations_label.setText(_translate("MainWindow", "Step:"))
         self.Cost_label.setText(_translate("MainWindow", "Cost:"))
+        self.Cost_line_edit.setStatusTip(_translate("MainWindow", "Cost will show infinity if there is no such route "))
+        self.Heuristic_Text_entry.setToolTip(_translate("MainWindow", "format->Node Heuristic"))
+        self.Heuristic_Text_entry.setStatusTip(_translate("MainWindow", "Node heuristic ex:A 5"))
+        self.Astar_button.setText(_translate("MainWindow", "A* search"))
+        self.Greedy_button.setText(_translate("MainWindow", "Greedy search"))
+        self.FormatLabel.setText(_translate("MainWindow", "Node Node Edge"))
+        self.Heuristic_list.setText(_translate("MainWindow", "Heuristics list"))
         self.Physics_Button.setChecked(True)
         self.Physics_Button.clicked.connect(lambda: self.Phys_clicked())
         self.Directed_Button.clicked.connect(lambda: self.directed_clicked())
@@ -161,6 +199,8 @@ class Ui_MainWindow(object):
         self.Lim_DFS_button.clicked.connect(lambda: self.LimDFS_clicked())
         self.iterative_deepening_Button.clicked.connect(lambda: self.Itr_deep_clicked())
         self.UniformCostButton.clicked.connect(lambda: self.UC_clicked())
+        self.Astar_button.clicked.connect(lambda: self.A_star_clicked())
+        self.Greedy_button.clicked.connect(lambda: self.GreedyClicked())
 
     def Phys_clicked(self):
         if self.counterPhysics % 2 == 0:  # odd->ucnchecked
@@ -347,16 +387,22 @@ class Ui_MainWindow(object):
     def UC_clicked(self):
         print("UC CLICKED")
         if G.makeDS(G.graph,self.Directed_Button.isChecked()):
+            if G.weighted==False:
+                self.Cost_line_edit.setText("Cost cant be determined")
+                return
             print("DS MADE")
             print(self.Start_line_edit.text(), "Start")
             start = self.Start_line_edit.text()
             print(self.goal_lineEdit.text(), "Goal")
             goal = self.goal_lineEdit.text()
             parent_map , shortest_path = (Algo.Uniform_Cost_search(G.graphDS,G.unvisited,start))
+            if parent_map =={}:
+                self.Cost_line_edit.setText("infinity")
+                return
             cost = shortest_path[goal]
             path = Algo.dijkstra_result(parent_map,shortest_path,start,goal)
-
             print("PATH",path,G.graphDS)
+
             if self.Directed_Button.isChecked():
                 print("Directed")
                 print(G.graphDS)
@@ -370,7 +416,21 @@ class Ui_MainWindow(object):
             print("LOCAL LOADED")
             self.Cost_line_edit.setText(str(cost))
 
+    def A_star_clicked(self):
+        pass
 
+    def GreedyClicked(self):
+        lines = self.Heuristic_Text_entry.toPlainText().splitlines()
+        G.makeHeuristicsList(lines)
+        G.makeDS(G.graph,self.Directed_Button.isChecked())
+        if self.Start_line_edit.text() == "" or self.goal_lineEdit.text()=="":
+            self.Cost_line_edit.setText("ENTER VALID START/END")
+            return
+        path = Algo.greedy_Search(self.Start_line_edit.text(),self.goal_lineEdit.text(),G.heuristic_dict,G.graphDS)
+        print("path inside GReedy clicked",path)
+        self.color_path(path)
+        self.webEngineView.load(self.local_url)
+        print("LOCAL LOADED")
 
 
 
