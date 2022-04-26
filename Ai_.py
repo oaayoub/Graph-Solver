@@ -114,12 +114,20 @@ class Ui_MainWindow(object):
         self.iterative_deep_iter_linde_edit = QtWidgets.QLineEdit(self.centralwidget)
         self.iterative_deep_iter_linde_edit.setGeometry(QtCore.QRect(570, 590, 51, 20))
         self.iterative_deep_iter_linde_edit.setObjectName("iterative_deep_iter_linde_edit")
-        self.Options_button = QtWidgets.QPushButton(self.centralwidget)
-        self.Options_button.setGeometry(QtCore.QRect(390, 10, 101, 23))
-        self.Options_button.setCheckable(True)
-        self.Options_button.setChecked(False)
-        self.Options_button.setDefault(True)
-        self.Options_button.setObjectName("Options_button")
+        self.Cost_label = QtWidgets.QLabel(self.centralwidget)
+        self.Cost_label.setGeometry(QtCore.QRect(410, 10, 31, 21))
+        font = QtGui.QFont()
+        font.setFamily("Yu Gothic UI Semibold")
+        font.setPointSize(9)
+        font.setBold(True)
+        font.setWeight(75)
+        self.Cost_label.setFont(font)
+        self.Cost_label.setObjectName("Cost_label")
+        self.Cost_line_edit = QtWidgets.QLineEdit(self.centralwidget)
+        self.Cost_line_edit.setGeometry(QtCore.QRect(440, 10, 261, 20))
+        self.Cost_line_edit.setReadOnly(True)
+        self.Cost_line_edit.setClearButtonEnabled(False)
+        self.Cost_line_edit.setObjectName("Cost_line_edit")
         self.retranslateUi(MainWindow)
         font = QtGui.QFont()
         font.setPointSize(12)
@@ -143,7 +151,7 @@ class Ui_MainWindow(object):
         self.limit_limited_dfs_label.setText(_translate("MainWindow", "Limit:"))
         self.Limit_iterative_deepening_label.setText(_translate("MainWindow", "Max Depth:"))
         self.iterations_label.setText(_translate("MainWindow", "Step:"))
-        self.Options_button.setText(_translate("MainWindow", "Options"))
+        self.Cost_label.setText(_translate("MainWindow", "Cost:"))
         self.Physics_Button.setChecked(True)
         self.Physics_Button.clicked.connect(lambda: self.Phys_clicked())
         self.Directed_Button.clicked.connect(lambda: self.directed_clicked())
@@ -286,7 +294,6 @@ class Ui_MainWindow(object):
     def color_path(self, path):
         temp = Network()
         temp.options.edges.inherit_colors(False)
-        #print("zzzzzzzzzzzzzzzzzzzzzzz")
         print(path)
         for i in path:
             temp.add_node(i,color='#00ff1e')
@@ -308,15 +315,62 @@ class Ui_MainWindow(object):
         main.g = temp
         main.g.save_graph("graph.html")
 
+    def color_path_dir(self, path,graph):
+        temp = Network()
+        temp.options.edges.inherit_colors(False)
+        print(path)
+        for i in path:
+            temp.add_node(i, color='#00ff1e')
+        print("NODES ADDED")
+        for i in range(len(path) - 1):
+            t1 = path[i]
+            t2 = path[i+1]
+            l1 = graph[t1]
+            for j in l1:
+                if j[0]==t2:
+                    Weight = j[1]
+            temp.add_edge(path[i], path[i + 1], color='#00ff1e',label=Weight)
+        print("EDGES ADDED")
+        for i in G.graph:
+            if len(i) == 1:
+                temp.add_node(i[0])
+            elif (len(i) == 2):
+                temp.add_node(i[0])
+                temp.add_node(i[1])
+                temp.add_edge(i[0], i[1])
+            elif (len(i) == 3):
+                temp.add_node(i[0])
+                temp.add_node(i[1])
+                temp.add_edge(i[0], i[1], label=str(i[2]), weight=int(i[2]))
+        main.g = temp
+        main.g.save_graph("graph.html")
     def UC_clicked(self):
         print("UC CLICKED")
         if G.makeDS(G.graph,self.Directed_Button.isChecked()):
             print("DS MADE")
             print(self.Start_line_edit.text(), "Start")
-            start =self.Start_line_edit.text()
+            start = self.Start_line_edit.text()
             print(self.goal_lineEdit.text(), "Goal")
             goal = self.goal_lineEdit.text()
-            print(Algo.Uniform_Cost_search(G.graphDS,G.unvisited,start))
+            parent_map , shortest_path = (Algo.Uniform_Cost_search(G.graphDS,G.unvisited,start))
+            cost = shortest_path[goal]
+            path = Algo.dijkstra_result(parent_map,shortest_path,start,goal)
+
+            print("PATH",path,G.graphDS)
+            if self.Directed_Button.isChecked():
+                print("Directed")
+                print(G.graphDS)
+                gds = G.graphDS
+                self.color_path_dir(path,gds)
+                main.directed_on()
+            else:
+                print("UNDIRECTED")
+                self.color_path_dir(path,G.graphDS)
+            self.webEngineView.load(self.local_url)
+            print("LOCAL LOADED")
+            self.Cost_line_edit.setText(str(cost))
+
+
 
 
 

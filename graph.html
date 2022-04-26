@@ -50,41 +50,13 @@
         
 
         // parsing and collecting nodes and edges from the python
-        nodes = new vis.DataSet([{"id": "2", "label": "2", "shape": "dot"}, {"id": "3", "label": "3", "shape": "dot"}, {"id": "1", "label": "1", "shape": "dot"}]);
-        edges = new vis.DataSet([{"from": "2", "label": "1", "to": "3", "weight": 1}, {"from": "1", "label": "4", "to": "2", "weight": 4}]);
+        nodes = new vis.DataSet([{"color": "#00ff1e", "id": "A", "label": "A", "shape": "dot"}, {"color": "#00ff1e", "id": "B", "label": "B", "shape": "dot"}, {"color": "#00ff1e", "id": "C", "label": "C", "shape": "dot"}, {"color": "#00ff1e", "id": "D", "label": "D", "shape": "dot"}]);
+        edges = new vis.DataSet([{"color": "#00ff1e", "from": "A", "label": 1, "to": "B"}, {"color": "#00ff1e", "from": "B", "label": 1, "to": "C"}, {"color": "#00ff1e", "from": "C", "label": 1, "to": "D"}, {"from": "A", "label": "1000", "to": "D", "weight": 1000}]);
 
         // adding nodes and edges to the graph
         data = {nodes: nodes, edges: edges};
 
-        var options = {
-    "configure": {
-        "enabled": false
-    },
-    "edges": {
-        "color": {
-            "inherit": true
-        },
-        "smooth": {
-            "enabled": false,
-            "type": "continuous"
-        }
-    },
-    "interaction": {
-        "dragNodes": true,
-        "hideEdgesOnDrag": false,
-        "hideNodesOnDrag": false
-    },
-    "physics": {
-        "enabled": true,
-        "stabilization": {
-            "enabled": true,
-            "fit": true,
-            "iterations": 1000,
-            "onlyDynamicEdges": false,
-            "updateInterval": 50
-        }
-    }
-};
+        var options = {"edges": {"arrows": {"to": {"enabled": true}}, "color": {"inherit": false}, "smooth": false}, "physics": {"enabled": false, "minVelocity": 0.75}};
         
         
 

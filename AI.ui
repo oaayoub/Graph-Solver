@@ -302,26 +302,41 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="Options_button">
+   <widget class="QLabel" name="Cost_label">
     <property name="geometry">
      <rect>
-      <x>390</x>
+      <x>410</x>
       <y>10</y>
-      <width>101</width>
-      <height>23</height>
+      <width>31</width>
+      <height>21</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Yu Gothic UI Semibold</family>
+      <pointsize>9</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
     <property name="text">
-     <string>Options</string>
+     <string>Cost:</string>
     </property>
-    <property name="checkable">
+   </widget>
+   <widget class="QLineEdit" name="Cost_line_edit">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>10</y>
+      <width>261</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="readOnly">
      <bool>true</bool>
     </property>
-    <property name="checked">
+    <property name="clearButtonEnabled">
      <bool>false</bool>
-    </property>
-    <property name="default">
-     <bool>true</bool>
     </property>
    </widget>
   </widget>

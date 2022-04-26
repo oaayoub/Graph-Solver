@@ -37,18 +37,21 @@ class GraphDS:
                 self.graph.append(i)
 
     def makeDS(self,edgelist,directed):
+        self.graphDS={}
+        self.weighted =True
+        self.unvisited=[]
         print("MAKE_DS")
         self.vertix_list={}
         print("HERE")
         if directed:
             print("directed")
             for i in edgelist:
-                if len(i)<3:
-                    print(i,"LESS")
-                    self.weighted=False
+                if len(i) < 3:
+                    print(i, "LESS")
+                    self.weighted = False
                     return {}
-                print(i,"OKAY")
-                self.graphDS[i[0]]=(i[1],int(i[2]))
+                print(i, "OKAY")
+                self.graphDS.setdefault(i[0], []).append((i[1], int(i[2])))
                 if i[0] not in self.unvisited:
                     self.unvisited.append(i[0])
                 if i[1] not in self.unvisited:
@@ -68,10 +71,11 @@ class GraphDS:
                 if i[1] not in self.unvisited:
                     self.unvisited.append(i[1])
 
-            self.number_verticies = len(self.vertix_list)
-            print("First Done")
-            print(self.graphDS)
-            return True
+        print("VERTIX NUM")
+        self.number_verticies = len(self.vertix_list)
+        print("First Done")
+        print(self.graphDS)
+        return True
 
 
 

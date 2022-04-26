@@ -53,3 +53,15 @@ while unV:
             previous_nodes[key] = current_min_node
     unV.remove(current_min_node)
 print(previous_nodes,shortest_path)
+path = ['1','2','3']
+graphDS ={'1':[('2',4),('3',5)]}
+t1 = path[0] #from
+t2 = path[1] # to
+l1 = graphDS[t1]
+print(l1)
+for i in l1:
+    if i[0] == t2:
+        label = i[1]
+        break
+print(label)
+print(int(5))
