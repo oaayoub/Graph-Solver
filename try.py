@@ -16,13 +16,12 @@ dist = { ('3', 1), ('2', 2), ('4', 5), ('6', 12)}
 dist = Algo.Sort(dist)
 print(dist)
 '''
-g = Network()
+g = Network(directed=True)
 g.add_node(0)
 g.add_node(1)
 g.add_edge(0, 1)
+
 g.add_edge(0, 1)
-g.add_edge(0, 1)
-g.add_edge(0, 1)
-g.options.set('{"physics":"False"}')
+g.options.edges =False
 g.set_edge_smooth('dynamic')
-g.show('try.html')
+g.show("Graph.html")

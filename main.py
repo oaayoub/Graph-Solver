@@ -2,7 +2,8 @@ from pyvis.network import Network
 import networkx as nx
 
 net = Network()
-g = Network()
+g = Network(directed=True)
+g.set_edge_smooth('dynamic')
 
 def makenet():
     g.options.edges.inherit_colors(False)
@@ -27,27 +28,7 @@ def physics_on():
 def save():
     g.save_graph("graph.html")
 
-def directed_on():
-    g.set_options("""
-var options = {
-  "edges": {
-    "arrows": {
-      "to": {
-        "enabled": true
-      }
-    },
-    "color": {
-      "inherit": false
-    },
-    "smooth": false
-  },
-  "physics": {
-    "enabled": false,
-    "minVelocity": 0.75
-  }
-}""")
-    g.directed = True
-    g.save_graph("graph.html")
+
 
 
 
