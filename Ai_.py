@@ -196,8 +196,8 @@ class Ui_MainWindow(object):
         self.TextEntry.textChanged.connect(lambda: self.text_Changed())
         self.DFS_Button.clicked.connect(lambda: self.DFS_clicked())
         self.BFSButton.clicked.connect(lambda: self.BFS_clicked())
-        self.Lim_DFS_button.clicked.connect(lambda: self.LimDFS_clicked())
         self.iterative_deepening_Button.clicked.connect(lambda: self.Itr_deep_clicked())
+        self.Lim_DFS_button.clicked.connect(lambda: self.LimDFS_clicked())
         self.UniformCostButton.clicked.connect(lambda: self.UC_clicked())
         self.Astar_button.clicked.connect(lambda: self.A_star_clicked())
         self.Greedy_button.clicked.connect(lambda: self.GreedyClicked())
@@ -271,7 +271,7 @@ class Ui_MainWindow(object):
 
     def LimDFS_clicked(self):
         ## get adj_list
-        if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "":
+        if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "" or self.Limited_dfs_lineEdit.text()=="":
             self.Cost_line_edit.setText("ENTER VALID START/END")
             return
         print("Limited DFS CLICKED")
@@ -290,7 +290,7 @@ class Ui_MainWindow(object):
 
     def Itr_deep_clicked(self):
         ## get adj_list
-        if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "":
+        if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "" or self.iterative_deep_iter_linde_edit.text()=="" or self.Limit_Iterative_deepening_line_edit.text()=="":
             self.Cost_line_edit.setText("ENTER VALID START/END")
         if int(self.iterative_deep_iter_linde_edit.text())<1:
             self.iterative_deep_iter_linde_edit.setText("!!!")
@@ -470,11 +470,12 @@ class Ui_MainWindow(object):
 
     def A_star_clicked(self):
         print("A* CLICKED")
+        G.makeDS(G.graph,self.Directed_Button.isChecked())
         lines = self.Heuristic_Text_entry.toPlainText().splitlines()
         G.makeHeuristicsList(lines)
         print("heuristic made",G.heuristic_dict)
-        if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "":
-            self.Cost_line_edit.setText("ENTER VALID START/END")
+        if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "" or len(G.heuristic_dict) != len(G.unvisited):
+            self.Cost_line_edit.setText("ENTER VALID START/END/Heuristics")
             return
         if G.makeDS(G.graph,self.Directed_Button.isChecked()):
             if G.weighted==False:
