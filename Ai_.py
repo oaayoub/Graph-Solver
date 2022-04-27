@@ -231,6 +231,10 @@ class Ui_MainWindow(object):
         print(G.graph)
         ##reload graph from data structure
         temp = Network(directed=True)
+        if self.Physics_Button.isChecked():
+            temp.barnes_hut(spring_length=160, spring_strength=1, damping=0.69,gravity=-1700)
+        else:
+            temp.barnes_hut(spring_length=160, damping=100, spring_strength=0)
         temp.set_edge_smooth('dynamic')
         for i in G.graph:
             if len(i) == 1:
@@ -337,8 +341,13 @@ class Ui_MainWindow(object):
 
     def color_path(self, path,vis_nodes):
         visited_edges=[]
+        print(vis_nodes,"VISIRED NODES LIST")
         #E33440 ->red
         temp = Network(directed=True)
+        if self.Physics_Button.isChecked():
+            temp.barnes_hut(spring_length=160, spring_strength=0.5, damping=0.69,gravity=-1500)
+        else:
+            temp.barnes_hut(spring_length=160, damping=1, spring_strength=0)
         temp.set_edge_smooth('dynamic')
         temp.options.edges.inherit_colors(False)
         G.makeHeuristicsList(self.Heuristic_Text_entry.toPlainText().splitlines())
@@ -385,6 +394,10 @@ class Ui_MainWindow(object):
     def color_path_dir(self, path,graph,vis_nodes):
         visited_edges = []
         temp = Network(directed=True)
+        if self.Physics_Button.isChecked():
+            temp.barnes_hut(spring_length=160, spring_strength=1, damping=0.69,gravity=-1700)
+        else:
+            temp.barnes_hut(spring_length=160, damping=1, spring_strength=0)
         temp.set_edge_smooth('dynamic')
         temp.options.edges.inherit_colors(False)
         G.makeHeuristicsList( self.Heuristic_Text_entry.toPlainText().splitlines())
@@ -412,9 +425,11 @@ class Ui_MainWindow(object):
                     Weight_found = True
             if Weight_found:
                 temp.add_edge(path[i], path[i + 1], color='#35DE4E',label=Weight)
+                visited_edges.append((path[i],path[i+1],str(Weight)))
+
             else:
                 temp.add_edge(path[i], path[i + 1], color='#35DE4E')
-            visited_edges.append((path[i],path[i+1]))
+                visited_edges.append((path[i],path[i+1]))
             Weight_found =False
         print("EDGES ADDED")
         for i in G.graph:
@@ -429,7 +444,7 @@ class Ui_MainWindow(object):
             elif (len(i) == 3):
                 temp.add_node(i[0])
                 temp.add_node(i[1])
-                if ((i[0],i[1]) in visited_edges):
+                if ((i[0],i[1],str(i[2])) in visited_edges):
                     continue
                 temp.add_edge(i[0], i[1], label=str(i[2]), weight=int(i[2]))
         main.g = temp

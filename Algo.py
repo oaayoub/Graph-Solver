@@ -33,16 +33,19 @@ def BFS(graph, S, G, Queue=[], visited=[], path=[]):
 
     while queue:
         s, path = queue.pop(0)
+        if s ==G:
+            return path , extras
         extras.append(s)
         visited.add(s)
         if s in graph:
             for node in graph[s]:
+                '''
                 if node == G:
                     return path + [G] , extras
-                else:
-                    if node not in visited:
-                        visited.add(node)
-                        queue.append((node, path + [node]))
+                '''
+                if node not in visited:
+                    visited.add(node)
+                    queue.append((node, path + [node]))
 
 
 def Limited_DFS(graph, S, G, li, lv, visited=[], path=[],extras=[]):
