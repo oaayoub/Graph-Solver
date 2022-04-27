@@ -1,5 +1,5 @@
-A B 100
-A C 1
+A B 1
+B C 1
 C D 1
-D G 1
-B G 200
+A Q 1
+Q D 3
