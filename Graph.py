@@ -1,10 +1,10 @@
 class GraphDS:
-    graph = []
-    graphDS ={}
-    weighted = True
-    adj_list=[]
-    unvisited =[]
-    heuristic_dict ={}
+    graph = [] #EDGELIST
+    graphDS ={} #adjaceny list
+    weighted = True # check if graph is weighted
+    adj_list=[] #non-weighted ajaceny list
+    unvisited =[] #list of all nodes
+    heuristic_dict ={} #heuristic of each node
     def __init__(self,Default):
         self.graph=[]
         with open("Default.txt") as text:
@@ -105,8 +105,25 @@ class GraphDS:
             value =i[1]
             self.heuristic_dict[key]=int(value)
 
+    def makeNonWeightedAdj_list(self,directed):
+        self.adj_list={}
+        print("make non weighted adj list")
+        if directed:
+            print("directed")
+            for i in self.graph:
+                if  len(i)>=2:
+                    self.graphDS.setdefault(i[0], []).append(i[1])
+                print(i, "OKAY")
+
+        else:
+            print("not directed")
+            for i in self.graph:
+                if  len(i)>=2:
+                    self.adj_list.setdefault(i[0], []).append(i[1])
+                    self.adj_list.setdefault(i[1], []).append(i[0])
+            print(i, "OKAY")
 
 
 
 
-
+#{'2': {'3', '1'}, '3': {'2'}, '1': {'2'}}

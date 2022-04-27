@@ -1,15 +1,16 @@
 import collections
 
 
-def DFS(graph, S, G, visited=[], path=[]):
+def DFS(graph, S, G, visited=[], path=[],extras=[]):
     print(S)
+    extras.append(S)
     if S not in graph:
         print("ERROR NOT IN GRAPH")
     path.append(S)
     if S == G:
         # print("FOUNDS")
         # print(path,"Path")
-        return path
+        return path,extras
 
     if S not in visited:
         visited.append(S)
@@ -19,33 +20,36 @@ def DFS(graph, S, G, visited=[], path=[]):
                 # print(i,"Children")
                 if DFS(graph, i, G, visited, path):
                     # print(path, "Path")
-                    return path
+                    return path,extras
     if path:
         path.pop()
     return False
 
 
 def BFS(graph, S, G, Queue=[], visited=[], path=[]):
+    extras=[]
     queue = [(S, [S])]
     visited = set()
 
     while queue:
         s, path = queue.pop(0)
+        extras.append(s)
         visited.add(s)
         if s in graph:
             for node in graph[s]:
                 if node == G:
-                    return path + [G]
+                    return path + [G] , extras
                 else:
                     if node not in visited:
                         visited.add(node)
                         queue.append((node, path + [node]))
 
 
-def Limited_DFS(graph, S, G, li, lv, visited=[], path=[]):
+def Limited_DFS(graph, S, G, li, lv, visited=[], path=[],extras=[]):
     print("limited dfs started", li, " ", lv)
     path.append(S)
     print(S)
+    extras.append(S)
     if lv <= li:
         print("INSIDE")
         if S not in graph:
@@ -53,7 +57,7 @@ def Limited_DFS(graph, S, G, li, lv, visited=[], path=[]):
         if S == G:
             # print("FOUNDS")
             # print(path,"Path")
-            return path
+            return path,extras
 
         if S not in visited:
             visited.append(S)
@@ -64,7 +68,7 @@ def Limited_DFS(graph, S, G, li, lv, visited=[], path=[]):
                     if Limited_DFS(graph, i, G, li, lv + 1, visited, path):
                         # print(path, "Path")
                         print("limited dfs working")
-                        return path
+                        return path,extras
     if path:
         path.pop()
     return False
@@ -81,6 +85,7 @@ def Itr_Lim_DFS(graph, S, G, max_depth, step):
 
 
 def Uniform_Cost_search(graph, graph_nodes, S):
+    extras=[]
     print("INSIDE ALGO")
     mygraph = graph
     print(graph, "GRAPH")
@@ -95,6 +100,7 @@ def Uniform_Cost_search(graph, graph_nodes, S):
     print("IA GRAPH 1")
     # initiating shortest path values
     for i in unvisited:
+        extras.append(i)
         shortest_path[i] = 1e6
     shortest_path[S] = 0
     print(1)
@@ -141,7 +147,8 @@ def Uniform_Cost_search(graph, graph_nodes, S):
     print(10)
     print(shortest_path)
     print(previous_nodes)
-    return (previous_nodes, shortest_path)
+    print(extras,"EXTRAS")
+    return (previous_nodes, shortest_path,extras)
 
 
 # sorting algorithm for list of tuples according to value
@@ -165,6 +172,7 @@ def dijkstra_result(parent_map, shortest_path, start, goal):
 
 
 def A_star_search(graph, graph_nodes, S, G, heuristic):
+    extras=[]
     print("INSIDE A Star search")
     mygraph = graph
     print(graph, "GRAPH")
@@ -191,6 +199,7 @@ def A_star_search(graph, graph_nodes, S, G, heuristic):
         print(3)
         current_min_node = None
         for node in openList:  # Iterate over the nodes to get min node
+            extras.append(node)
             print(node, "node")
             print(current_min_node, "curr min node")
             if (current_min_node == None) or (int(shortest_path[node]) + int(heuristic[node])) < (
@@ -213,7 +222,8 @@ def A_star_search(graph, graph_nodes, S, G, heuristic):
                 node = previous_nodes[node]
             path.append(S)
             path.reverse()
-            return path,shortest_path[G]
+            print("A* worked fine ")
+            return path,shortest_path[G],extras
 
         if not (current_min_node in mygraph):
             print(current_min_node, "NOT")
@@ -231,6 +241,7 @@ def A_star_search(graph, graph_nodes, S, G, heuristic):
             print("neighbour", neighbor)
             key = str(neighbor[0])
             val = neighbor[1]
+            extras.append(key)
             print(key, val, " KEY/VAL")
             if key not in openList and key not in closedList:
                 print("here 1")
@@ -250,12 +261,13 @@ def A_star_search(graph, graph_nodes, S, G, heuristic):
         closedList.add(current_min_node)
         print("here 4")
     print('Path does not exist!')
-    return None
+    return False
 
     # return (previous_nodes,shortest_path)
 
 
 def greedy_Search(S, G, heuristics, DS):
+    extras=[] #visited NODES
     print("inside Greedy FUNC")
     outgoingedes = {}
     print(DS, "DS")
@@ -277,6 +289,7 @@ def greedy_Search(S, G, heuristics, DS):
         print("Sorted", Q)
         s, val, path = Q.pop(0)
         visited.append(s)
+        extras.append(s)
         print(visited, "VISITED")
         for i in outgoingedes[s]:
             print(i, "i in greedy")
@@ -285,5 +298,5 @@ def greedy_Search(S, G, heuristics, DS):
             Q.append((i, heuristics[i], path + [i]))
             if i == G:
                 print(i, path + [i], "FOUND")
-                return path + [i]
+                return path + [i] , extras
         print(Q, "Q after children")
