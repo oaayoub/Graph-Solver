@@ -449,12 +449,7 @@ class Ui_MainWindow(object):
             start = self.Start_line_edit.text()
             print(self.goal_lineEdit.text(), "Goal")
             goal = self.goal_lineEdit.text()
-            parent_map , shortest_path = (Algo.A_star_search(G.graphDS,G.unvisited,start,G.heuristic_dict))
-            if parent_map =={}:
-                self.Cost_line_edit.setText("infinity")
-                return
-            cost = shortest_path[goal]
-            path = Algo.dijkstra_result(parent_map,shortest_path,start,goal)
+            path,cost = (Algo.A_star_search(G.graphDS,G.unvisited,start,goal,G.heuristic_dict))
             print("PATH",path,G.graphDS)
 
             if self.Directed_Button.isChecked():

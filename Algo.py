@@ -1,4 +1,6 @@
 import collections
+
+
 def DFS(graph, S, G, visited=[], path=[]):
     print(S)
     if S not in graph:
@@ -78,26 +80,26 @@ def Itr_Lim_DFS(graph, S, G, max_depth, step):
         counter = counter + step
 
 
-def Uniform_Cost_search(graph,graph_nodes,S):
+def Uniform_Cost_search(graph, graph_nodes, S):
     print("INSIDE ALGO")
     mygraph = graph
-    print(graph,"GRAPH")
+    print(graph, "GRAPH")
     print("IA GRAPH MADE")
     unvisited = graph_nodes
-    print("IA GRAPH unvisited",unvisited)
-    #cost of visiting node
-    shortest_path={}
-    #shortest path to node #road
-    previous_nodes={}
+    print("IA GRAPH unvisited", unvisited)
+    # cost of visiting node
+    shortest_path = {}
+    # shortest path to node #road
+    previous_nodes = {}
     curr_min_node = None
     print("IA GRAPH 1")
-    #initiating shortest path values
+    # initiating shortest path values
     for i in unvisited:
-        shortest_path[i]=1e6
-    shortest_path[S]=0
+        shortest_path[i] = 1e6
+    shortest_path[S] = 0
     print(1)
     print(2)
-    #visiting all nodes
+    # visiting all nodes
     while unvisited:
         print(3)
         current_min_node = None
@@ -107,20 +109,20 @@ def Uniform_Cost_search(graph,graph_nodes,S):
             elif shortest_path[node] < shortest_path[current_min_node]:
                 current_min_node = node
         print(4)
-        print("current node",current_min_node)
+        print("current node", current_min_node)
         # if graph is directed and node to have outhoing edges
         if not (current_min_node in mygraph):
-            print(current_min_node,"NOT")
+            print(current_min_node, "NOT")
             unvisited.remove(current_min_node)
             continue
-        #if node have only one outgoing edge it puts it in list
+        # if node have only one outgoing edge it puts it in list
         if not isinstance(mygraph[current_min_node], list):
             neighbors = [mygraph[current_min_node]]
         else:
             neighbors = mygraph[current_min_node]
-        print(neighbors,"NEIGHBORS")
+        print(neighbors, "NEIGHBORS")
         print(5)
-        #update the values of children
+        # update the values of children
         for neighbor in neighbors:
             print("neighbour", neighbor)
             print(6)
@@ -139,16 +141,19 @@ def Uniform_Cost_search(graph,graph_nodes,S):
     print(10)
     print(shortest_path)
     print(previous_nodes)
-    return (previous_nodes,shortest_path)
+    return (previous_nodes, shortest_path)
 
 
 # sorting algorithm for list of tuples according to value
 def Sort(sub_li):
     return (sorted(sub_li, key=lambda x: x[1]))
+
+
 def Sort_2(sub_li):
     return (sorted(sub_li, key=lambda x: x[2]))
 
-def dijkstra_result(parent_map,shortest_path,start,goal):
+
+def dijkstra_result(parent_map, shortest_path, start, goal):
     path = []
     node = goal
     while node != start:
@@ -158,112 +163,127 @@ def dijkstra_result(parent_map,shortest_path,start,goal):
     path.reverse()
     return path
 
-def A_star_search(graph,graph_nodes,S,heuristic):
+
+def A_star_search(graph, graph_nodes, S, G, heuristic):
     print("INSIDE A Star search")
     mygraph = graph
     print(graph, "GRAPH")
     print("IA GRAPH MADE")
     unvisited = graph_nodes
-    print("IA GRAPH unvisited",unvisited)
-    #cost of visiting node
-    shortest_path={}
-    #shortest path to node #road
-    previous_nodes={}
-    curr_min_node = None
+    print("IA GRAPH unvisited", unvisited)
+    # cost of visiting node
+    shortest_path = {}
+    # shortest path to node #road
+    previous_nodes = {}
     print("IA GRAPH 1")
-    #initiating shortest path values
-    for i in unvisited:
-        shortest_path[i]=1e6
-    shortest_path[S]=0
+    # initiating shortest path values
+    for i in graph_nodes:
+        shortest_path[i] = 1e6
+    shortest_path[S] = 0
     print(1)
     print(2)
-    #visiting all nodes
-    while unvisited:
+    openList = set([S])
+    closedList = set()
+
+
+    # visiting all nodes
+    while openList:
         print(3)
         current_min_node = None
-        for node in unvisited:  # Iterate over the nodes to get min node
-            print(node,"node")
-            print(shortest_path[node],"shortest path[node]")
-            print(type(heuristic[node]),"heu[node]")
-            if current_min_node == None:
+        for node in openList:  # Iterate over the nodes to get min node
+            print(node, "node")
+            print(current_min_node, "curr min node")
+            if (current_min_node == None) or (int(shortest_path[node]) + int(heuristic[node])) < (
+                    int(shortest_path[current_min_node]) + int(heuristic[current_min_node])):
                 current_min_node = node
-            elif (int(shortest_path[node]) +int(heuristic[node])) < (int(shortest_path[current_min_node]) + int(heuristic[current_min_node])):
-                current_min_node = node
+                print(current_min_node, "curr min node changed")
+
+        if current_min_node == None:
+            print("NO PATH")
+            return
         print(4)
-        print("current node",current_min_node)
+        print("current node", current_min_node)
         # if graph is directed and node to have outhoing edges
+        if current_min_node == G:
+            print("FOUND")
+            path = []
+            node = G
+            while node != S:
+                path.append(node)
+                node = previous_nodes[node]
+            path.append(S)
+            path.reverse()
+            return path,shortest_path[G]
+
         if not (current_min_node in mygraph):
-            print(current_min_node,"NOT")
+            print(current_min_node, "NOT")
             unvisited.remove(current_min_node)
             continue
-        #if node have only one outgoing edge it puts it in list
+        # if node have only one outgoing edge it puts it in list
         if not isinstance(mygraph[current_min_node], list):
             neighbors = [mygraph[current_min_node]]
         else:
             neighbors = mygraph[current_min_node]
-        print(neighbors,"NEIGHBORS")
+        print(neighbors, "NEIGHBORS")
         print(5)
-        #update the values of children
+        # update the values of children
         for neighbor in neighbors:
             print("neighbour", neighbor)
-            print(6)
             key = str(neighbor[0])
-            print(7)
             val = neighbor[1]
-            print(8)
             print(key, val, " KEY/VAL")
-            tentative_value = shortest_path[current_min_node] + val
-            if tentative_value  < shortest_path[key]:
-                shortest_path[key] = tentative_value
-                # We also update the best path to the current node
+            if key not in openList and key not in closedList:
+                print("here 1")
+                openList.add(key)
                 previous_nodes[key] = current_min_node
-        unvisited.remove(current_min_node)
-        print(9)
-    print(10)
-    print(shortest_path)
-    print(previous_nodes)
-    return (previous_nodes,shortest_path)
+                print("here 2")
+                shortest_path[key] = shortest_path[current_min_node] + val
+            elif (shortest_path[key]> shortest_path[current_min_node] + val):
+                print("here else 3")
+                shortest_path[key] = shortest_path[current_min_node]+val
+                print("here else 4")
+                previous_nodes[key]=current_min_node
 
 
+        print("here 3")
+        openList.remove(current_min_node)
+        closedList.add(current_min_node)
+        print("here 4")
+    print('Path does not exist!')
+    return None
 
-def greedy_Search(S,G,heuristics,DS):
+    # return (previous_nodes,shortest_path)
+
+
+def greedy_Search(S, G, heuristics, DS):
     print("inside Greedy FUNC")
     outgoingedes = {}
-    print(DS,"DS")
+    print(DS, "DS")
     for i in DS:
-        print(i,"i in DS")
+        print(i, "i in DS")
         for j in DS[i]:
-            print(j,"of DS of i")
-            outgoingedes.setdefault(i,[]).append((j[0]))
+            print(j, "of DS of i")
+            outgoingedes.setdefault(i, []).append((j[0]))
 
-
-    visited=[S]
-    print(outgoingedes,"outgoing edges")
-    print(S,"S")
-    print(heuristics,"heu")
-    print(heuristics[S],"heu[S]")
+    visited = [S]
+    print(outgoingedes, "outgoing edges")
+    print(S, "S")
+    print(heuristics, "heu")
+    print(heuristics[S], "heu[S]")
     print("G1")
-    Q = [(S,heuristics[S],[S])]
+    Q = [(S, heuristics[S], [S])]
     while Q:
         Sort(Q)
-        print("Sorted",Q)
-        s,val,path=Q.pop(0)
+        print("Sorted", Q)
+        s, val, path = Q.pop(0)
         visited.append(s)
-        print(visited,"VISITED")
+        print(visited, "VISITED")
         for i in outgoingedes[s]:
-            print(i,"i in greedy")
+            print(i, "i in greedy")
             if i in visited:
                 continue
-            Q.append((i,heuristics[i],path+[i]))
+            Q.append((i, heuristics[i], path + [i]))
             if i == G:
-                print(i,path+[i],"FOUND")
-                return path+[i]
-        print(Q,"Q after children")
-
-
-
-
-
-
-
-
+                print(i, path + [i], "FOUND")
+                return path + [i]
+        print(Q, "Q after children")
