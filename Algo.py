@@ -158,8 +158,73 @@ def dijkstra_result(parent_map,shortest_path,start,goal):
     path.reverse()
     return path
 
-def A_star_search(graph,graph_nodes,S):
-    pass
+def A_star_search(graph,graph_nodes,S,heuristic):
+    print("INSIDE A Star search")
+    mygraph = graph
+    print(graph, "GRAPH")
+    print("IA GRAPH MADE")
+    unvisited = graph_nodes
+    print("IA GRAPH unvisited",unvisited)
+    #cost of visiting node
+    shortest_path={}
+    #shortest path to node #road
+    previous_nodes={}
+    curr_min_node = None
+    print("IA GRAPH 1")
+    #initiating shortest path values
+    for i in unvisited:
+        shortest_path[i]=1e6
+    shortest_path[S]=0
+    print(1)
+    print(2)
+    #visiting all nodes
+    while unvisited:
+        print(3)
+        current_min_node = None
+        for node in unvisited:  # Iterate over the nodes to get min node
+            print(node,"node")
+            print(shortest_path[node],"shortest path[node]")
+            print(type(heuristic[node]),"heu[node]")
+            if current_min_node == None:
+                current_min_node = node
+            elif (int(shortest_path[node]) +int(heuristic[node])) < (int(shortest_path[current_min_node]) + int(heuristic[current_min_node])):
+                current_min_node = node
+        print(4)
+        print("current node",current_min_node)
+        # if graph is directed and node to have outhoing edges
+        if not (current_min_node in mygraph):
+            print(current_min_node,"NOT")
+            unvisited.remove(current_min_node)
+            continue
+        #if node have only one outgoing edge it puts it in list
+        if not isinstance(mygraph[current_min_node], list):
+            neighbors = [mygraph[current_min_node]]
+        else:
+            neighbors = mygraph[current_min_node]
+        print(neighbors,"NEIGHBORS")
+        print(5)
+        #update the values of children
+        for neighbor in neighbors:
+            print("neighbour", neighbor)
+            print(6)
+            key = str(neighbor[0])
+            print(7)
+            val = neighbor[1]
+            print(8)
+            print(key, val, " KEY/VAL")
+            tentative_value = shortest_path[current_min_node] + val
+            if tentative_value  < shortest_path[key]:
+                shortest_path[key] = tentative_value
+                # We also update the best path to the current node
+                previous_nodes[key] = current_min_node
+        unvisited.remove(current_min_node)
+        print(9)
+    print(10)
+    print(shortest_path)
+    print(previous_nodes)
+    return (previous_nodes,shortest_path)
+
+
 
 def greedy_Search(S,G,heuristics,DS):
     print("inside Greedy FUNC")
@@ -194,12 +259,6 @@ def greedy_Search(S,G,heuristics,DS):
                 print(i,path+[i],"FOUND")
                 return path+[i]
         print(Q,"Q after children")
-
-
-
-
-
-
 
 
 

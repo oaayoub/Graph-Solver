@@ -103,9 +103,7 @@ class GraphDS:
                 return False
             key =i[0]
             value =i[1]
-            self.heuristic_dict[key]=value
-
-
+            self.heuristic_dict[key]=int(value)
 
 
 

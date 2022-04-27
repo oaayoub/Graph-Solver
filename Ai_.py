@@ -253,7 +253,11 @@ class Ui_MainWindow(object):
         self.webEngineView.load(self.local_url)
 
     def DFS_clicked(self):
+        if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "":
+            self.Cost_line_edit.setText("ENTER VALID START/END")
+            return
         self.text_Changed()
+
         ## get adj_list
         print("DFS CLICKED")
         G.adj_list = main.g.get_adj_list()
@@ -272,6 +276,9 @@ class Ui_MainWindow(object):
 
     def LimDFS_clicked(self):
         ## get adj_list
+        if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "":
+            self.Cost_line_edit.setText("ENTER VALID START/END")
+            return
         print("Limited DFS CLICKED")
         G.adj_list = main.g.get_adj_list()
         print(G.adj_list)
@@ -290,6 +297,9 @@ class Ui_MainWindow(object):
 
     def Itr_deep_clicked(self):
         ## get adj_list
+        if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "":
+            self.Cost_line_edit.setText("ENTER VALID START/END")
+            return
         print("Limited DFS CLICKED")
         graph = main.g.get_adj_list()
         print(graph)
@@ -318,6 +328,9 @@ class Ui_MainWindow(object):
     def BFS_clicked(self):
         ## get adj_list
         print("BFS CLICKED")
+        if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "":
+            self.Cost_line_edit.setText("ENTER VALID START/END")
+            return
         G.adj_list = main.g.get_adj_list()
         print(G.adj_list)
         # do BFS
@@ -386,6 +399,9 @@ class Ui_MainWindow(object):
         main.g.save_graph("graph.html")
     def UC_clicked(self):
         print("UC CLICKED")
+        if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "":
+            self.Cost_line_edit.setText("ENTER VALID START/END")
+            return
         if G.makeDS(G.graph,self.Directed_Button.isChecked()):
             if G.weighted==False:
                 self.Cost_line_edit.setText("Cost cant be determined")
@@ -417,7 +433,43 @@ class Ui_MainWindow(object):
             self.Cost_line_edit.setText(str(cost))
 
     def A_star_clicked(self):
-        pass
+        print("A* CLICKED")
+        lines = self.Heuristic_Text_entry.toPlainText().splitlines()
+        G.makeHeuristicsList(lines)
+        print("heuristic made",G.heuristic_dict)
+        if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "":
+            self.Cost_line_edit.setText("ENTER VALID START/END")
+            return
+        if G.makeDS(G.graph,self.Directed_Button.isChecked()):
+            if G.weighted==False:
+                self.Cost_line_edit.setText("Cost cant be determined")
+                return
+            print("DS MADE")
+            print(self.Start_line_edit.text(), "Start")
+            start = self.Start_line_edit.text()
+            print(self.goal_lineEdit.text(), "Goal")
+            goal = self.goal_lineEdit.text()
+            parent_map , shortest_path = (Algo.A_star_search(G.graphDS,G.unvisited,start,G.heuristic_dict))
+            if parent_map =={}:
+                self.Cost_line_edit.setText("infinity")
+                return
+            cost = shortest_path[goal]
+            path = Algo.dijkstra_result(parent_map,shortest_path,start,goal)
+            print("PATH",path,G.graphDS)
+
+            if self.Directed_Button.isChecked():
+                print("Directed")
+                print(G.graphDS)
+                gds = G.graphDS
+                self.color_path_dir(path,gds)
+                main.directed_on()
+            else:
+                print("UNDIRECTED")
+                self.color_path_dir(path,G.graphDS)
+            self.webEngineView.load(self.local_url)
+            print("LOCAL LOADED")
+            self.Cost_line_edit.setText(str(cost))
+
 
     def GreedyClicked(self):
         lines = self.Heuristic_Text_entry.toPlainText().splitlines()
