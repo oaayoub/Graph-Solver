@@ -2,12 +2,11 @@ from pyvis.network import Network
 import networkx as nx
 
 net = Network()
-g = Network(directed=True)
-g.set_edge_smooth('dynamic')
+g = Network()
+
 
 def makenet():
     g.options.edges.inherit_colors(False)
-    g.barnes_hut(spring_length=160, spring_strength=1, damping=0.69,gravity=-1700)
     g.add_node('1')
     g.add_node('2')
     g.add_node('3')

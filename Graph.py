@@ -5,6 +5,7 @@ class GraphDS:
     adj_list=[] #non-weighted ajaceny list
     unvisited =[] #list of all nodes
     heuristic_dict ={} #heuristic of each node
+    goals =[] #goals list
     def __init__(self,Default):
         self.graph=[]
         with open("Default.txt") as text:
@@ -51,12 +52,14 @@ class GraphDS:
                     print(i, "LESS")
                     self.weighted = False
                     if  len(i)==2:
-                        self.graphDS.setdefault(i[0], []).append((i[1], 999999))
+                        self.graphDS.setdefault(i[0], []).append((i[1], 1))
                         if i[0] not in self.unvisited:
                             self.unvisited.append(i[0])
                         if i[1] not in self.unvisited:
                             self.unvisited.append(i[1])
                         continue
+                else:
+                    pass #Error
 
                 print(i, "OKAY")
                 self.graphDS.setdefault(i[0], []).append((i[1], int(i[2])))
@@ -71,15 +74,18 @@ class GraphDS:
                     print(i, "LESS")
                     self.weighted = False
                     if  len(i)==2:
-                        self.graphDS.setdefault(i[0], []).append((i[1], 999999))
-                        self.graphDS.setdefault(i[1], []).append((i[0], 999999))
+                        self.graphDS.setdefault(i[0], []).append((i[1], 1))
+                        self.graphDS.setdefault(i[1], []).append((i[0], 1))
                         if i[0] not in self.unvisited:
                             self.unvisited.append(i[0])
                         if i[1] not in self.unvisited:
                             self.unvisited.append(i[1])
                         continue
+                else:
+                    pass #Error
 
                 print(i, "OKAY")
+                #Exception handling
                 self.graphDS.setdefault(i[0],[]).append((i[1], int(i[2])))
                 self.graphDS.setdefault(i[1],[]).append((i[0], int(i[2])))
                 if i[0] not in self.unvisited:
@@ -101,9 +107,22 @@ class GraphDS:
             print(i)
             if len(i)>2:
                 return False
-            key =i[0]
-            value =i[1]
+            key = i[0]
+            value = i[1]
             self.heuristic_dict[key]=int(value)
+    def makeGoalsList(self,lines):
+        print("Make Goal list started",lines)
+        i = lines
+        i = i.rstrip()
+        i = i.lstrip()
+        i = i.split()
+        self.goals=i
+        print(self.goals,"Make goal list done")
+
+
+
+
+
 
     def makeNonWeightedAdj_list(self,directed):
         self.adj_list={}

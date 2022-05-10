@@ -17,6 +17,7 @@ dist = Algo.Sort(dist)
 print(dist)
 '''
 g = Network(directed=True)
+g.set_edge_smooth('dynamic') ##Caution##
 g.toggle_physics(True)
 g.add_node(0)
 g.add_node(1)
@@ -33,8 +34,12 @@ g.add_edge(4, 5)
 g.add_edge(0, 1,label="123")
 
 g.set_edge_smooth('dynamic')
-g.show_buttons()
 g.toggle_physics(False)
 #g.barnes_hut(spring_length=140, damping=1, spring_strength=0)
 
-g.show("Graph.html")
+GraphDS = {'2': [('3', 1), ('1', 1)], '3': [('2', 1)], '1': [('2', 1)]}
+l =[]
+l.append((1,54))
+t = (54,1)
+l.append(t)
+print(l)
