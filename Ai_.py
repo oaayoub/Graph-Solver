@@ -360,7 +360,7 @@ class Ui_MainWindow(object):
         ##ERROR NON INTEGERS
         print(int(self.iterative_deep_iter_linde_edit.text()),"Step")
         print(int(self.Limit_Iterative_deepening_line_edit.text()),"MAX DEPTH")
-
+        ##
         S=self.Start_line_edit.text()
         G.makeGoalsList(self.goal_lineEdit.text())
         goals = G.goals
