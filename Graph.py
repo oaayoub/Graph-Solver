@@ -112,12 +112,16 @@ class GraphDS:
             self.heuristic_dict[key]=int(value)
     def makeGoalsList(self,lines):
         print("Make Goal list started",lines)
+        i=[]
         i = lines
         i = i.rstrip()
         i = i.lstrip()
         i = i.split()
+        for j in i:
+            if j ==' ':
+                i.remove(' ')
         self.goals=i
-        print(self.goals,"Make goal list done")
+        print("goal list made",self.goals)
 
 
 
@@ -125,8 +129,9 @@ class GraphDS:
 
 
     def makeNonWeightedAdj_list(self,directed):
-        self.adj_list={}
         print("make non weighted adj list")
+
+        self.adj_list={}
         if directed:
             print("directed")
             for i in self.graph:

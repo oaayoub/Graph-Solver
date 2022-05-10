@@ -278,34 +278,34 @@ class Ui_MainWindow(object):
         # do DFS
         print(self.Start_line_edit.text(),"Start")
         print(self.goal_lineEdit.text(),"Goal")
-        temp,vis_nodes = Algo.DFS(G.adj_list,self.Start_line_edit.text(),self.goal_lineEdit.text(),visited=[],path=[])
-        print(temp,"DFS DONE")
+        Algo.VIS_NODES_ALGO=[]
+        path,vis_nodes = Algo.DFS(G.adj_list,self.Start_line_edit.text(),self.goal_lineEdit.text(),visited=[],path=[])
+        print(path,"DFS DONE",vis_nodes)
         G.makeDS(G.graph,self.Directed_Button.isChecked())
         cost = 0
         # change color of nodes and edges
         graphDs = G.graphDS
-        print(temp,"temp")
-        for i in range(len(temp)-1):
-            for j in graphDs.get(temp[i]):
+        print(path,"path")
+        for i in range(len(path)-1):
+            for j in graphDs.get(path[i]):
                 print(j,"i")
                 print(j[0],"i[0]")
                 print(j[1], "i[1]")
-                print(j[0],temp[i+1],"similarity")
-                if j[0] == temp[i+1]:
+                print(j[0],path[i+1],"similarity")
+                if j[0] == path[i+1]:
                     print("here")
                     cost+=int(j[1])
         print(cost,"COST")
         self.Cost_line_edit.setText(str(cost))
         print("here")
-        if temp:
-            #path grah visnodes
-            self.color_path_dir(temp,G.graphDS,vis_nodes)
-            self.webEngineView.load(self.local_url)
+
+        self.color_path_dir(path,G.graphDS,vis_nodes)
+        self.webEngineView.load(self.local_url)
 
     def LimDFS_clicked(self):
         ## get adj_list
         if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "" or self.Limited_dfs_lineEdit.text()=="":
-            self.Cost_line_edit.setText("ENTER VALID START/END")
+            self.Error_lineedit.setText("ENTER VALID START/END")
             return
         print("Limited DFS CLICKED")
         G.adj_list = main.g.get_adj_list()
@@ -314,39 +314,68 @@ class Ui_MainWindow(object):
         print(self.Start_line_edit.text(),"Start")
         print(self.goal_lineEdit.text(),"Goal")
         print(self.Limited_dfs_lineEdit.text(),"Limit")
-        temp,vis_nodes = Algo.Limited_DFS(G.adj_list,self.Start_line_edit.text(),self.goal_lineEdit.text(),int(self.Limited_dfs_lineEdit.text()),0,visited=[],path=[],extras=[])
-        print(temp,"Limited DFS DONE")
+        G.makeGoalsList(self.goal_lineEdit.text())
+        ##error int(self.Limited_dfs_lineEdit.text())
+        Algo.VIS_NODES_ALGO=[]
+        Flag,path,vis_nodes = Algo.Limited_DFS(G.adj_list,self.Start_line_edit.text(),G.goals,int(self.Limited_dfs_lineEdit.text()),0,visited=[],path=[],extras=[])
+        print(path,"Limited DFS DONE",vis_nodes)
+        G.makeDS(G.graph,self.Directed_Button.isChecked())
+        graphDs = G.graphDS
+        cost = 0
+        for i in range(len(path)-1):
+            for j in graphDs.get(path[i]):
+                print(j,"i")
+                print(j[0],"i[0]")
+                print(j[1], "i[1]")
+                print(j[0],path[i+1],"similarity")
+                if j[0] == path[i+1]:
+                    print("here")
+                    cost+=int(j[1])
+        print(cost,"COST")
+        self.Cost_line_edit.setText(str(cost))
+        print("here")
         # change color of nodes and edges
-        if temp:
-            self.color_path(temp,vis_nodes)
-            self.webEngineView.load(self.local_url)
+        print(len(path),"length path")
+        #if path:
+        self.color_path_dir(path,graphDs,vis_nodes)
+        self.webEngineView.load(self.local_url)
+
+##
 
     def Itr_deep_clicked(self):
+        ##COLOR PATH DIR
         ## get adj_list
         if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "" or self.iterative_deep_iter_linde_edit.text()=="" or self.Limit_Iterative_deepening_line_edit.text()=="":
-            self.Cost_line_edit.setText("ENTER VALID START/END")
+            self.Error_lineedit.setText("ENTER VALID START/END")
+            return
         if int(self.iterative_deep_iter_linde_edit.text())<1:
             self.iterative_deep_iter_linde_edit.setText("!!!")
             return
         print("Limited DFS CLICKED")
-        graph = self.G.makeNonWeightedAdj_list(self.Directed_Button.isChecked())
-        print(graph)
+        G.adj_list = main.g.get_adj_list()
+        print(G.adj_list,"ADJ LIST")
         # do Limited_DFS
         print(self.Start_line_edit.text(),"Start")
         print(self.goal_lineEdit.text(),"Goal")
+        ##ERROR NON INTEGERS
         print(int(self.iterative_deep_iter_linde_edit.text()),"Step")
         print(int(self.Limit_Iterative_deepening_line_edit.text()),"MAX DEPTH")
+
         S=self.Start_line_edit.text()
-        G=self.goal_lineEdit.text()
+        G.makeGoalsList(self.goal_lineEdit.text())
+        goals = G.goals
+        ##ERROR NON INTEGERS
         step = int(self.iterative_deep_iter_linde_edit.text())
         Max_dep = int(self.Limit_Iterative_deepening_line_edit.text())
-
-        temp,vis_nodes = Algo.Itr_Lim_DFS(graph, S, G, Max_dep, step)
-        print(temp,"Limited DFS DONE")
+        G.makeDS(G.graph,self.Directed_Button.isChecked())
+        graphDs =G.graphDS
+        print("BEFORE STORM")
+        Algo.VIS_NODES_ALGO=[]
+        Flag,path,vis_nodes = Algo.Itr_Lim_DFS(G.adj_list, S, goals, Max_dep, step)
+        print(path,"Limited DFS DONE")
         # change color of nodes and edges
-        if temp:
-            self.color_path(temp,vis_nodes)
-            self.webEngineView.load(self.local_url)
+        self.color_path_dir(path,graphDs,vis_nodes)
+        self.webEngineView.load(self.local_url)
 
 
 
@@ -355,7 +384,7 @@ class Ui_MainWindow(object):
         ## get adj_list
         print("BFS CLICKED")
         if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "":
-            self.Cost_line_edit.setText("ENTER VALID START/END")
+            self.Error_lineedit.setText("ENTER VALID START/END")
             return
         G.adj_list = main.g.get_adj_list()
         print(G.adj_list)
@@ -365,7 +394,10 @@ class Ui_MainWindow(object):
         temp,vis_nodes = Algo.BFS(G.adj_list,self.Start_line_edit.text(),self.goal_lineEdit.text(),Queue=[],visited=[],path=[])
         print(temp,"BFS DONE")
         # change color of nodes and edges
-        self.color_path(temp,vis_nodes)
+        G.makeDS(G.graph,self.Directed_Button.isChecked())
+
+
+        self.color_path_dir(temp,G.graphDS,vis_nodes)
         self.webEngineView.load(self.local_url)
 
     def color_path(self, path,vis_nodes):
@@ -472,48 +504,50 @@ class Ui_MainWindow(object):
             temp.add_node(i,color='#E33440')
         print("NODES ADDED")
         print("GraphDS",graph)
+        print(len(path),"PATH LENGTH")
         first_vis_edges = [()]
-        for i in range(len(path) - 1):
-            print("iii",i)
+        if len(path)>0:
+            print("HERE X")
+            for i in range(len(path) - 1):
+                print("iii",i)
 
-            t1 = path[i]
-            t2 = path[i+1]
-            print("i1")
-            l1 = graph[t1]
-            print("i1")
+                t1 = path[i]
+                t2 = path[i+1]
+                print("i1")
+                l1 = graph[t1]
+                print("i1")
 
-            for j in l1:
-                if j[0]==t2:
-                    Weight = j[1]
-                    Weight_found = True
-            print("i2")
-
-            print("i2")
-            if Weight_found:
-                trash = (path[i],path[i+1])
-                if (trash in first_vis_edges):
-                    print("VISITED")
-                else:
-                    temp.add_edge(path[i], path[i + 1], color='#35DE4E',label=Weight)
-                    print(path[i], path[i + 1],"added 1")
-                    visited_edges.append((path[i],path[i+1],str(Weight)))
-                    print(path[i], path[i + 1],"added 1")
-                    trash = (path[i],path[i + 1])
-                    first_vis_edges.append(trash)
-                    print(first_vis_edges,"fve iteration")
-
-            else:
-                trash = (path[i], path[i + 1])
-                if trash in first_vis_edges:
-                    print("vISTted")
-                else:
-                    temp.add_edge(path[i], path[i + 1], color='#35DE4E')
-                    visited_edges.append((path[i],path[i+1]))
-                    print(path[i], path[i + 1],"added 2")
+                for j in l1:
+                    if j[0]==t2:
+                        Weight = j[1]
+                        Weight_found = True
+                print("i2")
+                print("i2")
+                if Weight_found:
                     trash = (path[i],path[i+1])
-                    first_vis_edges+=trash
-            Weight_found =False
-            print("i3")
+                    if (trash in first_vis_edges):
+                        print("VISITED")
+                    else:
+                        temp.add_edge(path[i], path[i + 1], color='#35DE4E',label=Weight)
+                        print(path[i], path[i + 1],"added 1")
+                        visited_edges.append((path[i],path[i+1],str(Weight)))
+                        print(path[i], path[i + 1],"added 1")
+                        trash = (path[i],path[i + 1])
+                        first_vis_edges.append(trash)
+                        print(first_vis_edges,"FIR VIS EDGES iteration")
+
+                else:
+                    trash = (path[i], path[i + 1])
+                    if trash in first_vis_edges:
+                        print("VVISTted")
+                    else:
+                        temp.add_edge(path[i], path[i + 1], color='#35DE4E')
+                        visited_edges.append((path[i],path[i+1]))
+                        print(path[i], path[i + 1],"added 2")
+                        trash = (path[i],path[i+1])
+                        first_vis_edges+=trash
+                Weight_found =False
+                print("i3")
         print("FIR VISITED LIST",first_vis_edges)
         print("EDGES ADDED")
         for i in G.graph:
@@ -540,7 +574,7 @@ class Ui_MainWindow(object):
     def UC_clicked(self):
         print("UC CLICKED")
         if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "":
-            self.Cost_line_edit.setText("ENTER VALID START/END")
+            self.Error_lineedit.setText("ENTER VALID START/END")
             return
         if G.makeDS(G.graph,self.Directed_Button.isChecked()):
             if G.weighted==False:

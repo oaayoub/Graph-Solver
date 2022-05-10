@@ -36,10 +36,16 @@ g.add_edge(0, 1,label="123")
 g.set_edge_smooth('dynamic')
 g.toggle_physics(False)
 #g.barnes_hut(spring_length=140, damping=1, spring_strength=0)
+def trial(x):
+    if x:
+        return True,10
+    else:
+        return False,5
 
 GraphDS = {'2': [('3', 1), ('1', 1)], '3': [('2', 1)], '1': [('2', 1)]}
 l =[]
-l.append((1,54))
-t = (54,1)
-l.append(t)
-print(l)
+if l:
+    print(l)
+else:
+    print("XZ")
+print(trial(True)[0])
