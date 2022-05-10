@@ -21,7 +21,7 @@ class Ui_MainWindow(object):
         file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "graph.html"))
         local_url = QtCore.QUrl.fromLocalFile(file_path)
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1027, 647)
+        MainWindow.resize(1031, 705)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.TextEntry = QtWidgets.QPlainTextEdit(self.centralwidget)
@@ -55,19 +55,19 @@ class Ui_MainWindow(object):
         self.BFSButton.setGeometry(QtCore.QRect(260, 560, 75, 61))
         self.BFSButton.setObjectName("BFSButton")
         self.Start_line_edit = QtWidgets.QLineEdit(self.centralwidget)
-        self.Start_line_edit.setGeometry(QtCore.QRect(740, 10, 41, 20))
+        self.Start_line_edit.setGeometry(QtCore.QRect(60, 630, 61, 20))
         self.Start_line_edit.setObjectName("Start_line_edit")
         self.goal_lineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.goal_lineEdit.setGeometry(QtCore.QRect(832, 10, 41, 20))
+        self.goal_lineEdit.setGeometry(QtCore.QRect(160, 630, 861, 20))
         self.goal_lineEdit.setObjectName("goal_lineEdit")
         self.Start_label = QtWidgets.QLabel(self.centralwidget)
-        self.Start_label.setGeometry(QtCore.QRect(708, 10, 41, 20))
+        self.Start_label.setGeometry(QtCore.QRect(30, 630, 41, 20))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         self.Start_label.setFont(font)
         self.Start_label.setObjectName("Start_label")
         self.Goal_label = QtWidgets.QLabel(self.centralwidget)
-        self.Goal_label.setGeometry(QtCore.QRect(800, 10, 31, 20))
+        self.Goal_label.setGeometry(QtCore.QRect(130, 630, 31, 20))
         font = QtGui.QFont()
         font.setFamily("Segoe UI Variable Small")
         self.Goal_label.setFont(font)
@@ -146,6 +146,18 @@ class Ui_MainWindow(object):
         self.FormatLabel.setObjectName("FormatLabel")
         self.Heuristic_list = QtWidgets.QLabel(self.centralwidget)
         self.Heuristic_list.setGeometry(QtCore.QRect(910, 10, 101, 21))
+        self.Error_Label = QtWidgets.QLabel(self.centralwidget)
+        self.Error_Label.setGeometry(QtCore.QRect(30, 660, 41, 21))
+        font = QtGui.QFont()
+        font.setFamily("Yu Gothic UI Semibold")
+        font.setPointSize(9)
+        font.setBold(True)
+        font.setWeight(75)
+        self.Error_Label.setFont(font)
+        self.Error_Label.setObjectName("Error_Label")
+        self.Error_lineedit = QtWidgets.QLineEdit(self.centralwidget)
+        self.Error_lineedit.setGeometry(QtCore.QRect(60, 660, 961, 21))
+        self.Error_lineedit.setObjectName("Error_lineedit")
         font = QtGui.QFont()
         font.setFamily("Yu Gothic UI")
         font.setPointSize(11)
@@ -201,6 +213,7 @@ class Ui_MainWindow(object):
         self.UniformCostButton.clicked.connect(lambda: self.UC_clicked())
         self.Astar_button.clicked.connect(lambda: self.A_star_clicked())
         self.Greedy_button.clicked.connect(lambda: self.GreedyClicked())
+        self.Error_Label.setText(_translate("MainWindow", "Error"))
 
     def Phys_clicked(self):
         if self.counterPhysics % 2 == 0:  # odd->ucnchecked
@@ -214,12 +227,7 @@ class Ui_MainWindow(object):
         self.webEngineView.load(self.local_url)
 
     def directed_clicked(self):
-        if self.Directed_Button.isChecked() == True:
-            self.Physics_Button.setEnabled(False)
-        else:
-            self.text_Changed()
-            main.g.directed = False
-            self.Physics_Button.setEnabled(True)
+        self.text_Changed()
 
         main.g.save_graph("graph.html")
         self.webEngineView.load(self.local_url)
@@ -227,11 +235,17 @@ class Ui_MainWindow(object):
     def text_Changed(self):
         with open("FILE.txt", 'w') as f:
             f.write(self.TextEntry.toPlainText())
+
         G.reload()
+
         print(G.graph)
         ##reload graph from data structure
-        temp = Network(directed=True)
-        temp.set_edge_smooth('dynamic')
+        if(self.Directed_Button.isChecked()):
+            temp = Network(directed=True)
+            temp.set_edge_smooth('dynamic') ##Caution##
+        else:
+            temp = Network()
+
         for i in G.graph:
             if len(i) == 1:
                 temp.add_node(i[0])
@@ -242,7 +256,9 @@ class Ui_MainWindow(object):
             elif (len(i) == 3):
                 temp.add_node(i[0])
                 temp.add_node(i[1])
+                ##Caution
                 temp.add_edge(i[0], i[1], label=str(i[2]), weight=int(i[2]))
+
         main.g = temp
         main.g.save_graph("graph.html")
 
@@ -262,17 +278,34 @@ class Ui_MainWindow(object):
         # do DFS
         print(self.Start_line_edit.text(),"Start")
         print(self.goal_lineEdit.text(),"Goal")
-        temp,vis_nodes = Algo.DFS(G.adj_list,self.Start_line_edit.text(),self.goal_lineEdit.text(),visited=[],path=[])
-        print(temp,"DFS DONE")
+        Algo.VIS_NODES_ALGO=[]
+        path,vis_nodes = Algo.DFS(G.adj_list,self.Start_line_edit.text(),self.goal_lineEdit.text(),visited=[],path=[])
+        print(path,"DFS DONE",vis_nodes)
+        G.makeDS(G.graph,self.Directed_Button.isChecked())
+        cost = 0
         # change color of nodes and edges
-        if temp:
-            self.color_path(temp,vis_nodes)
-            self.webEngineView.load(self.local_url)
+        graphDs = G.graphDS
+        print(path,"path")
+        for i in range(len(path)-1):
+            for j in graphDs.get(path[i]):
+                print(j,"i")
+                print(j[0],"i[0]")
+                print(j[1], "i[1]")
+                print(j[0],path[i+1],"similarity")
+                if j[0] == path[i+1]:
+                    print("here")
+                    cost+=int(j[1])
+        print(cost,"COST")
+        self.Cost_line_edit.setText(str(cost))
+        print("here")
+
+        self.color_path_dir(path,G.graphDS,vis_nodes)
+        self.webEngineView.load(self.local_url)
 
     def LimDFS_clicked(self):
         ## get adj_list
         if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "" or self.Limited_dfs_lineEdit.text()=="":
-            self.Cost_line_edit.setText("ENTER VALID START/END")
+            self.Error_lineedit.setText("ENTER VALID START/END")
             return
         print("Limited DFS CLICKED")
         G.adj_list = main.g.get_adj_list()
@@ -281,39 +314,68 @@ class Ui_MainWindow(object):
         print(self.Start_line_edit.text(),"Start")
         print(self.goal_lineEdit.text(),"Goal")
         print(self.Limited_dfs_lineEdit.text(),"Limit")
-        temp,vis_nodes = Algo.Limited_DFS(G.adj_list,self.Start_line_edit.text(),self.goal_lineEdit.text(),int(self.Limited_dfs_lineEdit.text()),0,visited=[],path=[],extras=[])
-        print(temp,"Limited DFS DONE")
+        G.makeGoalsList(self.goal_lineEdit.text())
+        ##error int(self.Limited_dfs_lineEdit.text())
+        Algo.VIS_NODES_ALGO=[]
+        Flag,path,vis_nodes = Algo.Limited_DFS(G.adj_list,self.Start_line_edit.text(),G.goals,int(self.Limited_dfs_lineEdit.text()),0,visited=[],path=[],extras=[])
+        print(path,"Limited DFS DONE",vis_nodes)
+        G.makeDS(G.graph,self.Directed_Button.isChecked())
+        graphDs = G.graphDS
+        cost = 0
+        for i in range(len(path)-1):
+            for j in graphDs.get(path[i]):
+                print(j,"i")
+                print(j[0],"i[0]")
+                print(j[1], "i[1]")
+                print(j[0],path[i+1],"similarity")
+                if j[0] == path[i+1]:
+                    print("here")
+                    cost+=int(j[1])
+        print(cost,"COST")
+        self.Cost_line_edit.setText(str(cost))
+        print("here")
         # change color of nodes and edges
-        if temp:
-            self.color_path(temp,vis_nodes)
-            self.webEngineView.load(self.local_url)
+        print(len(path),"length path")
+        #if path:
+        self.color_path_dir(path,graphDs,vis_nodes)
+        self.webEngineView.load(self.local_url)
+
+##
 
     def Itr_deep_clicked(self):
+        ##COLOR PATH DIR
         ## get adj_list
         if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "" or self.iterative_deep_iter_linde_edit.text()=="" or self.Limit_Iterative_deepening_line_edit.text()=="":
-            self.Cost_line_edit.setText("ENTER VALID START/END")
+            self.Error_lineedit.setText("ENTER VALID START/END")
+            return
         if int(self.iterative_deep_iter_linde_edit.text())<1:
             self.iterative_deep_iter_linde_edit.setText("!!!")
             return
         print("Limited DFS CLICKED")
-        graph = self.G.makeNonWeightedAdj_list(self.Directed_Button.isChecked())
-        print(graph)
+        G.adj_list = main.g.get_adj_list()
+        print(G.adj_list,"ADJ LIST")
         # do Limited_DFS
         print(self.Start_line_edit.text(),"Start")
         print(self.goal_lineEdit.text(),"Goal")
+        ##ERROR NON INTEGERS
         print(int(self.iterative_deep_iter_linde_edit.text()),"Step")
         print(int(self.Limit_Iterative_deepening_line_edit.text()),"MAX DEPTH")
+        ##
         S=self.Start_line_edit.text()
-        G=self.goal_lineEdit.text()
+        G.makeGoalsList(self.goal_lineEdit.text())
+        goals = G.goals
+        ##ERROR NON INTEGERS
         step = int(self.iterative_deep_iter_linde_edit.text())
         Max_dep = int(self.Limit_Iterative_deepening_line_edit.text())
-
-        temp,vis_nodes = Algo.Itr_Lim_DFS(graph, S, G, Max_dep, step)
-        print(temp,"Limited DFS DONE")
+        G.makeDS(G.graph,self.Directed_Button.isChecked())
+        graphDs =G.graphDS
+        print("BEFORE STORM")
+        Algo.VIS_NODES_ALGO=[]
+        Flag,path,vis_nodes = Algo.Itr_Lim_DFS(G.adj_list, S, goals, Max_dep, step)
+        print(path,"Limited DFS DONE")
         # change color of nodes and edges
-        if temp:
-            self.color_path(temp,vis_nodes)
-            self.webEngineView.load(self.local_url)
+        self.color_path_dir(path,graphDs,vis_nodes)
+        self.webEngineView.load(self.local_url)
 
 
 
@@ -322,7 +384,7 @@ class Ui_MainWindow(object):
         ## get adj_list
         print("BFS CLICKED")
         if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "":
-            self.Cost_line_edit.setText("ENTER VALID START/END")
+            self.Error_lineedit.setText("ENTER VALID START/END")
             return
         G.adj_list = main.g.get_adj_list()
         print(G.adj_list)
@@ -332,13 +394,21 @@ class Ui_MainWindow(object):
         temp,vis_nodes = Algo.BFS(G.adj_list,self.Start_line_edit.text(),self.goal_lineEdit.text(),Queue=[],visited=[],path=[])
         print(temp,"BFS DONE")
         # change color of nodes and edges
-        self.color_path(temp,vis_nodes)
+        G.makeDS(G.graph,self.Directed_Button.isChecked())
+
+
+        self.color_path_dir(temp,G.graphDS,vis_nodes)
         self.webEngineView.load(self.local_url)
 
     def color_path(self, path,vis_nodes):
         visited_edges=[]
+        print(vis_nodes,"VISITED NODES LIST")
         #E33440 ->red
         temp = Network(directed=True)
+        if self.Physics_Button.isChecked():
+            temp.barnes_hut(spring_length=160, spring_strength=0.5, damping=0.69,gravity=-1500)
+        else:
+            temp.barnes_hut(spring_length=160, damping=1, spring_strength=0)
         temp.set_edge_smooth('dynamic')
         temp.options.edges.inherit_colors(False)
         G.makeHeuristicsList(self.Heuristic_Text_entry.toPlainText().splitlines())
@@ -383,15 +453,46 @@ class Ui_MainWindow(object):
         main.g.save_graph("graph.html")
 
     def color_path_dir(self, path,graph,vis_nodes):
+        #Gold  #F4D03F
+        #BLue  #3452F9
+        #Red   #E33440
+        #Green #35DE4E
+        print("Here COLOR PATH 1")
+
         visited_edges = []
-        temp = Network(directed=True)
-        temp.set_edge_smooth('dynamic')
+        if self.Directed_Button.isChecked():
+            print("DIRECTED GRAPH CLICKED")
+            temp = Network(directed=True)
+            temp.set_edge_smooth('dynamic')
+        else:
+            temp = Network()
+        print("Here COLOR PATH 1")
+
+        if self.Physics_Button.isChecked():
+            temp.toggle_physics(True)
+        else:
+            temp.toggle_physics(False)
+        print("Here COLOR PATH 1")
+
         temp.options.edges.inherit_colors(False)
-        G.makeHeuristicsList( self.Heuristic_Text_entry.toPlainText().splitlines())
+        G.makeHeuristicsList(self.Heuristic_Text_entry.toPlainText().splitlines())
+        print("Here COLOR PATH 2")
+        G.makeGoalsList(self.goal_lineEdit.text())
+        print("Here COLOR PATH 3")
+
+
+        print("Here COLOR PATH 1")
+        temp.add_node(self.Start_line_edit.text(), color='#3452F9')
+        for goal in G.goals:
+            temp.add_node(goal, color='#F4D03F')
+
+        print("Here COLOR PATH 1")
+
         print(path)
         for i in path:
             if  str(i) in G.heuristic_dict:
                 print("COLOR PATH DIR 1")
+
                 temp.add_node(i, color='#35DE4E',title=str(G.heuristic_dict[i]))
                 continue
             temp.add_node(i, color='#35DE4E')
@@ -402,20 +503,52 @@ class Ui_MainWindow(object):
                 continue
             temp.add_node(i,color='#E33440')
         print("NODES ADDED")
-        for i in range(len(path) - 1):
-            t1 = path[i]
-            t2 = path[i+1]
-            l1 = graph[t1]
-            for j in l1:
-                if j[0]==t2:
-                    Weight = j[1]
-                    Weight_found = True
-            if Weight_found:
-                temp.add_edge(path[i], path[i + 1], color='#35DE4E',label=Weight)
-            else:
-                temp.add_edge(path[i], path[i + 1], color='#35DE4E')
-            visited_edges.append((path[i],path[i+1]))
-            Weight_found =False
+        print("GraphDS",graph)
+        print(len(path),"PATH LENGTH")
+        first_vis_edges = [()]
+        if len(path)>0:
+            print("HERE X")
+            for i in range(len(path) - 1):
+                print("iii",i)
+
+                t1 = path[i]
+                t2 = path[i+1]
+                print("i1")
+                l1 = graph[t1]
+                print("i1")
+
+                for j in l1:
+                    if j[0]==t2:
+                        Weight = j[1]
+                        Weight_found = True
+                print("i2")
+                print("i2")
+                if Weight_found:
+                    trash = (path[i],path[i+1])
+                    if (trash in first_vis_edges):
+                        print("VISITED")
+                    else:
+                        temp.add_edge(path[i], path[i + 1], color='#35DE4E',label=Weight)
+                        print(path[i], path[i + 1],"added 1")
+                        visited_edges.append((path[i],path[i+1],str(Weight)))
+                        print(path[i], path[i + 1],"added 1")
+                        trash = (path[i],path[i + 1])
+                        first_vis_edges.append(trash)
+                        print(first_vis_edges,"FIR VIS EDGES iteration")
+
+                else:
+                    trash = (path[i], path[i + 1])
+                    if trash in first_vis_edges:
+                        print("VVISTted")
+                    else:
+                        temp.add_edge(path[i], path[i + 1], color='#35DE4E')
+                        visited_edges.append((path[i],path[i+1]))
+                        print(path[i], path[i + 1],"added 2")
+                        trash = (path[i],path[i+1])
+                        first_vis_edges+=trash
+                Weight_found =False
+                print("i3")
+        print("FIR VISITED LIST",first_vis_edges)
         print("EDGES ADDED")
         for i in G.graph:
             if len(i) == 1:
@@ -423,21 +556,25 @@ class Ui_MainWindow(object):
             elif (len(i) == 2):
                 temp.add_node(i[0])
                 temp.add_node(i[1])
-                if ((i[0],i[1]) in visited_edges):
+                if ((i[0],i[1]) in first_vis_edges):
                     continue
-                temp.add_edge(i[0], i[1])
+                else:
+                    temp.add_edge(i[0], i[1])
             elif (len(i) == 3):
                 temp.add_node(i[0])
                 temp.add_node(i[1])
-                if ((i[0],i[1]) in visited_edges):
+                if ((i[0],i[1]) in first_vis_edges):
                     continue
-                temp.add_edge(i[0], i[1], label=str(i[2]), weight=int(i[2]))
+                else:
+                    temp.add_edge(i[0], i[1], label=str(i[2]), weight=int(i[2]))
         main.g = temp
         main.g.save_graph("graph.html")
+
+
     def UC_clicked(self):
         print("UC CLICKED")
         if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "":
-            self.Cost_line_edit.setText("ENTER VALID START/END")
+            self.Error_lineedit.setText("ENTER VALID START/END")
             return
         if G.makeDS(G.graph,self.Directed_Button.isChecked()):
             if G.weighted==False:
@@ -460,7 +597,8 @@ class Ui_MainWindow(object):
                 print("Directed")
                 print(G.graphDS)
                 gds = G.graphDS
-                self.color_path_dir(path,gds,vis_nodes)
+                goals = self.goal_lineEdit.text()
+                self.color_path_dir(path,gds,vis_nodes,goals)
             else:
                 print("UNDIRECTED")
                 self.color_path_dir(path,G.graphDS,vis_nodes)
