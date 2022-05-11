@@ -371,26 +371,22 @@ class Ui_MainWindow(object):
         graphDs = G.graphDS
         cost = 0
         try:
-            for j in range(len(path))-1:
-                j
+            for i in range(len(path)-1):
+                for j in graphDs.get(path[i]):
+                    print(j,"i")
+                    print(j[0],"i[0]")
+                    print(j[1], "i[1]")
+                    print(j[0],path[i+1],"similarity")
+                    if j[0] == path[i+1]:
+                        print("here")
+                        cost+=int(j[1])
+            print(cost,"COST")
+            self.Cost_line_edit.setText(str(cost))
+            print("here")
+            # change color of nodes and edges
+            print(len(path),"length path")
         except:
-            self.Error_lineedit.setText("Invalid path")
-            return
-        for i in range(len(path)-1):
-            for j in graphDs.get(path[i]):
-                print(j,"i")
-                print(j[0],"i[0]")
-                print(j[1], "i[1]")
-                print(j[0],path[i+1],"similarity")
-                if j[0] == path[i+1]:
-                    print("here")
-                    cost+=int(j[1])
-        print(cost,"COST")
-        self.Cost_line_edit.setText(str(cost))
-        print("here")
-        # change color of nodes and edges
-        print(len(path),"length path")
-        #if path:
+            self.Cost_line_edit.setText("Cant find cost")
         try:
             self.color_path_dir(path,graphDs,vis_nodes)
         except:
@@ -439,7 +435,26 @@ class Ui_MainWindow(object):
             Flag,path,vis_nodes = Algo.Itr_Lim_DFS(G.adj_list, S, goals, Max_dep, step)
         except:
             self.Error_lineedit.setText("getting path error")
-        print(path,"Limited DFS DONE")
+        print(path,"Iter Limited DFS DONE", vis_nodes)
+        cost = 0
+        # change color of nodes and edges
+        graphDs = G.graphDS
+        print(path,"path")
+        try:
+            for i in range(len(path)-1):
+                for j in graphDs.get(path[i]):
+                    print(j,"i")
+                    print(j[0],"i[0]")
+                    print(j[1], "i[1]")
+                    print(j[0],path[i+1],"similarity")
+                    if j[0] == path[i+1]:
+                        print("here")
+                        cost+=int(j[1])
+            print(cost,"COST")
+            self.Cost_line_edit.setText(str(cost))
+            print("here")
+        except:
+            self.Error_lineedit.setText("Error#3 Invalid Path")
         # change color of nodes and edges
         self.color_path_dir(path,graphDs,vis_nodes)
         self.webEngineView.load(self.local_url)
@@ -463,6 +478,26 @@ class Ui_MainWindow(object):
         # change color of nodes and edges
         G.makeDS(G.graph,self.Directed_Button.isChecked())
 
+        path = temp
+        cost = 0
+        # change color of nodes and edges
+        graphDs = G.graphDS
+        print(path,"path")
+        try:
+            for i in range(len(path)-1):
+                for j in graphDs.get(path[i]):
+                    print(j,"i")
+                    print(j[0],"i[0]")
+                    print(j[1], "i[1]")
+                    print(j[0],path[i+1],"similarity")
+                    if j[0] == path[i+1]:
+                        print("here")
+                        cost+=int(j[1])
+            print(cost,"COST")
+            self.Cost_line_edit.setText(str(cost))
+            print("here")
+        except:
+            self.Error_lineedit.setText("Error#3 Invalid Path")
 
         self.color_path_dir(temp,G.graphDS,vis_nodes)
         self.webEngineView.load(self.local_url)
@@ -728,6 +763,25 @@ class Ui_MainWindow(object):
             return
         path,vis_nodes = Algo.greedy_Search(self.Start_line_edit.text(),self.goal_lineEdit.text(),G.heuristic_dict,G.graphDS)
         print("path inside GReedy clicked",path)
+        cost = 0
+        # change color of nodes and edges
+        graphDs = G.graphDS
+        print(path,"path")
+        try:
+            for i in range(len(path)-1):
+                for j in graphDs.get(path[i]):
+                    print(j,"i")
+                    print(j[0],"i[0]")
+                    print(j[1], "i[1]")
+                    print(j[0],path[i+1],"similarity")
+                    if j[0] == path[i+1]:
+                        print("here")
+                        cost+=int(j[1])
+            print(cost,"COST")
+            self.Cost_line_edit.setText(str(cost))
+            print("here")
+        except:
+            self.Error_lineedit.setText("Error#3 Invalid Path")
         self.color_path(path,vis_nodes)
         self.webEngineView.load(self.local_url)
         print("LOCAL LOADED")
