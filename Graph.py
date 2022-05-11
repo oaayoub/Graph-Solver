@@ -6,6 +6,9 @@ class GraphDS:
     unvisited =[] #list of all nodes
     heuristic_dict ={} #heuristic of each node
     goals =[] #goals list
+    heuristic_valid=True
+    heuristic_valid_long=False
+
     def __init__(self,Default):
         self.graph=[]
         with open("Default.txt") as text:
@@ -33,6 +36,7 @@ class GraphDS:
             i = i.split(' ')
             if i ==['']:
                 continue
+
             i[len(i) - 1] = i[len(i) - 1].removesuffix("\n")
             i[len(i) - 1] = i[len(i) - 1].removesuffix(" ")
             if i not in self.graph:
@@ -99,6 +103,8 @@ class GraphDS:
         print(self.graphDS)
         return True
     def makeHeuristicsList(self,lines):
+        self.heuristic_valid =True
+        self.heuristic_valid_long = False
         self.heuristic_dict={}
         for i in lines:
             i = i.rstrip()
@@ -106,9 +112,15 @@ class GraphDS:
             i = i.split()
             print(i)
             if len(i)>2:
+                self.heuristic_valid_long = True
                 return False
             key = i[0]
             value = i[1]
+            try:
+                int(value)
+            except:
+                self.heuristic_valid=False
+                return
             self.heuristic_dict[key]=int(value)
     def makeGoalsList(self,lines):
         print("Make Goal list started",lines)
