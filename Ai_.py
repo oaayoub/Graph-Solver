@@ -385,7 +385,6 @@ class Ui_MainWindow(object):
             print("here")
             # change color of nodes and edges
             print(len(path),"length path")
-            #if path:
         except:
             self.Cost_line_edit.setText("Cant find cost")
         try:
