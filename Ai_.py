@@ -337,7 +337,7 @@ class Ui_MainWindow(object):
             self.Cost_line_edit.setText(str(cost))
             print("here")
         except:
-            self.Error_lineedit.setText("Error#3 Invalid Path")
+            self.Error_lineedit.setText("Invalid Cost")
             return
 
         self.color_path_dir(path,G.graphDS,vis_nodes)
