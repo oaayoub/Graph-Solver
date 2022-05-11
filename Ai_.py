@@ -267,6 +267,10 @@ class Ui_MainWindow(object):
         else:
             temp = Network()
 
+        if self.Physics_Button.isChecked():
+            temp.toggle_physics(True)
+        else:
+            temp.toggle_physics(False)
         for i in G.graph:
             if len(i) == 1:
                 temp.add_node(i[0])
