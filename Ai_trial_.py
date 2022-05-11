@@ -162,10 +162,17 @@ class Ui_MainWindow(object):
         self.Error_Label.setObjectName("Error_Label")
         self.Error_lineedit = QtWidgets.QLineEdit(self.centralwidget)
         self.Error_lineedit.setGeometry(QtCore.QRect(60, 660, 961, 21))
+        self.Error_lineedit.setReadOnly(True)
         self.Error_lineedit.setObjectName("Error_lineedit")
         self.goal_lineEdit = QtWidgets.QLineEdit(self.centralwidget)
         self.goal_lineEdit.setGeometry(QtCore.QRect(160, 630, 861, 20))
         self.goal_lineEdit.setObjectName("goal_lineEdit")
+        self.Export_Button = QtWidgets.QPushButton(self.centralwidget)
+        self.Export_Button.setGeometry(QtCore.QRect(180, 10, 91, 23))
+        self.Export_Button.setAutoFillBackground(False)
+        self.Export_Button.setCheckable(False)
+        self.Export_Button.setChecked(False)
+        self.Export_Button.setObjectName("Export_Button")
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -205,6 +212,7 @@ class Ui_MainWindow(object):
         self.Heuristic_list.setText(_translate("MainWindow", "Heuristics list"))
         self.Error_Label.setText(_translate("MainWindow", "Error"))
         self.goal_lineEdit.setStatusTip(_translate("MainWindow", "Goal Node"))
+        self.Export_Button.setText(_translate("MainWindow", "Export"))
 
 
 if __name__ == "__main__":

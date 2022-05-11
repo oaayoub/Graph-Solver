@@ -4,7 +4,7 @@ import os
 import Algo
 import main, Graph
 from pyvis.network import Network
-
+import sys
 G = Graph.GraphDS("default")
 print(G.graph)
 
@@ -128,6 +128,9 @@ class Ui_MainWindow(object):
         self.Cost_line_edit.setReadOnly(True)
         self.Cost_line_edit.setClearButtonEnabled(False)
         self.Cost_line_edit.setObjectName("Cost_line_edit")
+        self.Export_Button = QtWidgets.QPushButton(self.centralwidget)
+        self.Export_Button.setGeometry(QtCore.QRect(180, 10, 91, 23))
+        self.Export_Button.setObjectName("Export_Button")
         self.Heuristic_Text_entry = QtWidgets.QPlainTextEdit(self.centralwidget)
         self.Heuristic_Text_entry.setGeometry(QtCore.QRect(890, 40, 131, 511))
         font = QtGui.QFont()
@@ -166,6 +169,7 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.Heuristic_list.setFont(font)
         self.Heuristic_list.setObjectName("Heuristic_list")
+        self.Error_lineedit.setReadOnly(True)
 
         self.retranslateUi(MainWindow)
         font = QtGui.QFont()
@@ -202,18 +206,24 @@ class Ui_MainWindow(object):
         self.Greedy_button.setText(_translate("MainWindow", "Greedy search"))
         self.FormatLabel.setText(_translate("MainWindow", "Node Node Edge"))
         self.Heuristic_list.setText(_translate("MainWindow", "Heuristics list"))
+        self.Export_Button.setText(_translate("MainWindow", "Export"))
         self.Physics_Button.setChecked(True)
-        self.Physics_Button.clicked.connect(lambda: self.Phys_clicked())
-        self.Directed_Button.clicked.connect(lambda: self.directed_clicked())
-        self.TextEntry.textChanged.connect(lambda: self.text_Changed())
-        self.DFS_Button.clicked.connect(lambda: self.DFS_clicked())
-        self.BFSButton.clicked.connect(lambda: self.BFS_clicked())
-        self.iterative_deepening_Button.clicked.connect(lambda: self.Itr_deep_clicked())
-        self.Lim_DFS_button.clicked.connect(lambda: self.LimDFS_clicked())
-        self.UniformCostButton.clicked.connect(lambda: self.UC_clicked())
-        self.Astar_button.clicked.connect(lambda: self.A_star_clicked())
-        self.Greedy_button.clicked.connect(lambda: self.GreedyClicked())
         self.Error_Label.setText(_translate("MainWindow", "Error"))
+
+        try:
+            self.Physics_Button.clicked.connect(lambda: self.Phys_clicked())
+            self.Directed_Button.clicked.connect(lambda: self.directed_clicked())
+            self.TextEntry.textChanged.connect(lambda: self.text_Changed())
+            self.DFS_Button.clicked.connect(lambda: self.DFS_clicked())
+            self.BFSButton.clicked.connect(lambda: self.BFS_clicked())
+            self.iterative_deepening_Button.clicked.connect(lambda: self.Itr_deep_clicked())
+            self.Lim_DFS_button.clicked.connect(lambda: self.LimDFS_clicked())
+            self.UniformCostButton.clicked.connect(lambda: self.UC_clicked())
+            self.Astar_button.clicked.connect(lambda: self.A_star_clicked())
+            self.Greedy_button.clicked.connect(lambda: self.GreedyClicked())
+            self.Export_Button.clicked.connect(lambda: self.Export_Clicked())
+        except:
+            self.Error_lineedit.setText("Error")
 
     def Phys_clicked(self):
         if self.counterPhysics % 2 == 0:  # odd->ucnchecked
@@ -239,8 +249,19 @@ class Ui_MainWindow(object):
         G.reload()
 
         print(G.graph)
+        ##Check each in graph have <<char char int>>
+        for l in G.graph:
+            if len(l)>3:
+                self.Error_lineedit.setText("Enter only 3 values Node Node Edge, <<char char int>>")
+                return
+            if len(l)==3:
+                try:
+                    int(l[2])
+                except:
+                    self.Error_lineedit.setText("Weight must be <<integer>>")
+                    return
         ##reload graph from data structure
-        if(self.Directed_Button.isChecked()):
+        if self.Directed_Button.isChecked():
             temp = Network(directed=True)
             temp.set_edge_smooth('dynamic') ##Caution##
         else:
@@ -257,6 +278,11 @@ class Ui_MainWindow(object):
                 temp.add_node(i[0])
                 temp.add_node(i[1])
                 ##Caution
+                try:
+                    int(i[2])
+                except:
+                    self.Error_lineedit.setText("weight must be integer")
+                    return
                 temp.add_edge(i[0], i[1], label=str(i[2]), weight=int(i[2]))
 
         main.g = temp
@@ -264,10 +290,15 @@ class Ui_MainWindow(object):
 
         ##update .HTML
         self.webEngineView.load(self.local_url)
+    def Export_Clicked(self):
+        with open("Exported_Text.txt", 'w') as f:
+            f.write(self.TextEntry.toPlainText())
+        EXP_GRAPH = main.g
+        EXP_GRAPH.save_graph("Exported_graph.html")
 
     def DFS_clicked(self):
         if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "":
-            self.Cost_line_edit.setText("ENTER VALID START/END")
+            self.Error_lineedit.setText("ENTER VALID START/END")
             return
         self.text_Changed()
 
@@ -279,25 +310,35 @@ class Ui_MainWindow(object):
         print(self.Start_line_edit.text(),"Start")
         print(self.goal_lineEdit.text(),"Goal")
         Algo.VIS_NODES_ALGO=[]
-        path,vis_nodes = Algo.DFS(G.adj_list,self.Start_line_edit.text(),self.goal_lineEdit.text(),visited=[],path=[])
+        try:
+            path,vis_nodes = Algo.DFS(G.adj_list,self.Start_line_edit.text(),self.goal_lineEdit.text(),visited=[],path=[])
+
+        except:
+            self.Error_lineedit.setText("Make Sure Node Exists")
+            return
+
         print(path,"DFS DONE",vis_nodes)
         G.makeDS(G.graph,self.Directed_Button.isChecked())
         cost = 0
         # change color of nodes and edges
         graphDs = G.graphDS
         print(path,"path")
-        for i in range(len(path)-1):
-            for j in graphDs.get(path[i]):
-                print(j,"i")
-                print(j[0],"i[0]")
-                print(j[1], "i[1]")
-                print(j[0],path[i+1],"similarity")
-                if j[0] == path[i+1]:
-                    print("here")
-                    cost+=int(j[1])
-        print(cost,"COST")
-        self.Cost_line_edit.setText(str(cost))
-        print("here")
+        try:
+            for i in range(len(path)-1):
+                for j in graphDs.get(path[i]):
+                    print(j,"i")
+                    print(j[0],"i[0]")
+                    print(j[1], "i[1]")
+                    print(j[0],path[i+1],"similarity")
+                    if j[0] == path[i+1]:
+                        print("here")
+                        cost+=int(j[1])
+            print(cost,"COST")
+            self.Cost_line_edit.setText(str(cost))
+            print("here")
+        except:
+            self.Error_lineedit.setText("Error#3 Invalid Path")
+            return
 
         self.color_path_dir(path,G.graphDS,vis_nodes)
         self.webEngineView.load(self.local_url)
@@ -317,11 +358,24 @@ class Ui_MainWindow(object):
         G.makeGoalsList(self.goal_lineEdit.text())
         ##error int(self.Limited_dfs_lineEdit.text())
         Algo.VIS_NODES_ALGO=[]
+        try:
+            int(self.Limited_dfs_lineEdit.text())
+
+        except:
+            self.Error_lineedit.setText("Enter integer values in <Limit>")
+            return
+
         Flag,path,vis_nodes = Algo.Limited_DFS(G.adj_list,self.Start_line_edit.text(),G.goals,int(self.Limited_dfs_lineEdit.text()),0,visited=[],path=[],extras=[])
         print(path,"Limited DFS DONE",vis_nodes)
         G.makeDS(G.graph,self.Directed_Button.isChecked())
         graphDs = G.graphDS
         cost = 0
+        try:
+            for j in range(len(path))-1:
+                j
+        except:
+            self.Error_lineedit.setText("Invalid path")
+            return
         for i in range(len(path)-1):
             for j in graphDs.get(path[i]):
                 print(j,"i")
@@ -337,7 +391,11 @@ class Ui_MainWindow(object):
         # change color of nodes and edges
         print(len(path),"length path")
         #if path:
-        self.color_path_dir(path,graphDs,vis_nodes)
+        try:
+            self.color_path_dir(path,graphDs,vis_nodes)
+        except:
+            self.Error_lineedit.setText("Cant color path!")
+            return
         self.webEngineView.load(self.local_url)
 
 ##
@@ -348,8 +406,15 @@ class Ui_MainWindow(object):
         if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "" or self.iterative_deep_iter_linde_edit.text()=="" or self.Limit_Iterative_deepening_line_edit.text()=="":
             self.Error_lineedit.setText("ENTER VALID START/END")
             return
+        try:
+            step = int(self.iterative_deep_iter_linde_edit.text())
+            Max_dep = int(self.Limit_Iterative_deepening_line_edit.text())
+        except:
+            self.Error_lineedit.setText("Limit/Iterations must be integers")
+            return
+
         if int(self.iterative_deep_iter_linde_edit.text())<1:
-            self.iterative_deep_iter_linde_edit.setText("!!!")
+            self.Error_lineedit.setText("iterations must be integer and bigger than 0")
             return
         print("Limited DFS CLICKED")
         G.adj_list = main.g.get_adj_list()
@@ -365,13 +430,15 @@ class Ui_MainWindow(object):
         G.makeGoalsList(self.goal_lineEdit.text())
         goals = G.goals
         ##ERROR NON INTEGERS
-        step = int(self.iterative_deep_iter_linde_edit.text())
-        Max_dep = int(self.Limit_Iterative_deepening_line_edit.text())
+
         G.makeDS(G.graph,self.Directed_Button.isChecked())
         graphDs =G.graphDS
         print("BEFORE STORM")
         Algo.VIS_NODES_ALGO=[]
-        Flag,path,vis_nodes = Algo.Itr_Lim_DFS(G.adj_list, S, goals, Max_dep, step)
+        try:
+            Flag,path,vis_nodes = Algo.Itr_Lim_DFS(G.adj_list, S, goals, Max_dep, step)
+        except:
+            self.Error_lineedit.setText("getting path error")
         print(path,"Limited DFS DONE")
         # change color of nodes and edges
         self.color_path_dir(path,graphDs,vis_nodes)
@@ -641,8 +708,20 @@ class Ui_MainWindow(object):
 
 
     def GreedyClicked(self):
-        lines = self.Heuristic_Text_entry.toPlainText().splitlines()
-        G.makeHeuristicsList(lines)
+
+        try:
+            lines = self.Heuristic_Text_entry.toPlainText().splitlines()
+            G.makeHeuristicsList(lines)
+            if G.heuristic_valid==False:
+                self.Error_lineedit.setText("heuristic value must be integer")
+                return
+            if G.heuristic_valid_long:
+                self.Error_lineedit.setText("enter 2 values only <<char integer>>")
+                return
+        except:
+            self.Error_lineedit.setText("Make sure Heuristic list in Node Heuristic format <<char int>> and not empty")
+            return
+
         G.makeDS(G.graph,self.Directed_Button.isChecked())
         if self.Start_line_edit.text() == "" or self.goal_lineEdit.text()=="":
             self.Cost_line_edit.setText("ENTER VALID START/END")
