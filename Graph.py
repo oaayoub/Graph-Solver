@@ -62,10 +62,15 @@ class GraphDS:
                         if i[1] not in self.unvisited:
                             self.unvisited.append(i[1])
                         continue
-                else:
-                    pass #Error
+                elif len(i)>3:
+                    return False
 
                 print(i, "OKAY")
+                try:
+                    int(i[2])
+                except:
+                    return False
+
                 self.graphDS.setdefault(i[0], []).append((i[1], int(i[2])))
                 if i[0] not in self.unvisited:
                     self.unvisited.append(i[0])
@@ -85,11 +90,15 @@ class GraphDS:
                         if i[1] not in self.unvisited:
                             self.unvisited.append(i[1])
                         continue
-                else:
-                    pass #Error
+                elif len(i)>3:
+                    return False
 
                 print(i, "OKAY")
                 #Exception handling
+                try:
+                    int(i[2])
+                except:
+                    return False
                 self.graphDS.setdefault(i[0],[]).append((i[1], int(i[2])))
                 self.graphDS.setdefault(i[1],[]).append((i[0], int(i[2])))
                 if i[0] not in self.unvisited:
@@ -122,17 +131,20 @@ class GraphDS:
                 self.heuristic_valid=False
                 return
             self.heuristic_dict[key]=int(value)
+
     def makeGoalsList(self,lines):
         print("Make Goal list started",lines)
         i=[]
+        self.goals=[]
         i = lines
         i = i.rstrip()
         i = i.lstrip()
         i = i.split()
+
+
         for j in i:
-            if j ==' ':
-                i.remove(' ')
-        self.goals=i
+            if not j == " " :
+                self.goals.append(j)
         print("goal list made",self.goals)
 
 

@@ -42,10 +42,6 @@ def trial(x):
     else:
         return False,5
 
-GraphDS = {'2': [('3', 1), ('1', 1)], '3': [('2', 1)], '1': [('2', 1)]}
-l =[]
-if l:
-    print(l)
-else:
-    print("XZ")
-print(trial(True)[0])
+L = [('2', 7, ['1', '2']), ('7', 5, ['1', '7'])]
+print(Algo.Sort(L))
+

@@ -306,6 +306,8 @@ class Ui_MainWindow(object):
 
         ##update .HTML
         self.webEngineView.load(self.local_url)
+        ## Clear Error
+        self.Error_lineedit.setText(" ")
     def Export_Clicked(self):
         with open("Exported_Text.txt", 'w') as f:
             f.write(self.TextEntry.toPlainText())
@@ -325,15 +327,16 @@ class Ui_MainWindow(object):
         # do DFS
         print(self.Start_line_edit.text(),"Start")
         print(self.goal_lineEdit.text(),"Goal")
+        G.makeGoalsList(self.goal_lineEdit.text())
         Algo.VIS_NODES_ALGO=[]
         try:
-            path,vis_nodes = Algo.DFS(G.adj_list,self.Start_line_edit.text(),self.goal_lineEdit.text(),visited=[],path=[])
+            path = Algo.DFS(G.adj_list,self.Start_line_edit.text(),G.goals,visited=[],path=[])
 
         except:
             self.Error_lineedit.setText("Make Sure Node Exists")
             return
 
-        print(path,"DFS DONE",vis_nodes)
+        print(path,"DFS DONE",Algo.VIS_NODES_ALGO)
         G.makeDS(G.graph,self.Directed_Button.isChecked())
         cost = 0
         # change color of nodes and edges
@@ -356,7 +359,7 @@ class Ui_MainWindow(object):
             self.Error_lineedit.setText("Invalid Cost")
             return
 
-        self.color_path_dir(path,G.graphDS,vis_nodes)
+        self.color_path_dir(path,G.graphDS,Algo.VIS_NODES_ALGO)
         self.webEngineView.load(self.local_url)
 
     def LimDFS_clicked(self):
@@ -441,12 +444,13 @@ class Ui_MainWindow(object):
         S=self.Start_line_edit.text()
         G.makeGoalsList(self.goal_lineEdit.text())
         goals = G.goals
-        ##ERROR NON INTEGERS
+
 
         G.makeDS(G.graph,self.Directed_Button.isChecked())
         graphDs =G.graphDS
         print("BEFORE STORM")
         Algo.VIS_NODES_ALGO=[]
+        ##ERROR NON INTEGERS
         try:
             Flag,path,vis_nodes = Algo.Itr_Lim_DFS(G.adj_list, S, goals, Max_dep, step)
         except:
@@ -488,8 +492,9 @@ class Ui_MainWindow(object):
         print(G.adj_list)
         # do BFS
         print(self.Start_line_edit.text(),"Star")
-        print(self.goal_lineEdit.text(),"Goal")
-        temp,vis_nodes = Algo.BFS(G.adj_list,self.Start_line_edit.text(),self.goal_lineEdit.text(),Queue=[],visited=[],path=[])
+        G.makeGoalsList(self.goal_lineEdit.text())
+        print(G.goals,"Goal")
+        temp,vis_nodes = Algo.BFS(G.adj_list,self.Start_line_edit.text(),G.goals,Queue=[],visited=[],path=[])
         print(temp,"BFS DONE")
         # change color of nodes and edges
         G.makeDS(G.graph,self.Directed_Button.isChecked())
@@ -694,35 +699,42 @@ class Ui_MainWindow(object):
         if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "":
             self.Error_lineedit.setText("ENTER VALID START/END")
             return
-        if G.makeDS(G.graph,self.Directed_Button.isChecked()):
-            if G.weighted==False:
-                self.Cost_line_edit.setText("Cost cant be determined")
-                return
-            print("DS MADE")
-            print(self.Start_line_edit.text(), "Start")
-            start = self.Start_line_edit.text()
-            print(self.goal_lineEdit.text(), "Goal")
-            goal = self.goal_lineEdit.text()
-            parent_map , shortest_path,vis_nodes = Algo.Uniform_Cost_search(G.graphDS,G.unvisited,start)
-            if parent_map =={}:
-                self.Cost_line_edit.setText("infinity")
-                return
-            cost = shortest_path[goal]
-            path = Algo.dijkstra_result(parent_map,shortest_path,start,goal)
-            print("PATH",path,G.graphDS)
 
-            if self.Directed_Button.isChecked():
-                print("Directed")
-                print(G.graphDS)
-                gds = G.graphDS
-                goals = self.goal_lineEdit.text()
-                self.color_path_dir(path,gds,vis_nodes,goals)
-            else:
-                print("UNDIRECTED")
-                self.color_path_dir(path,G.graphDS,vis_nodes)
-            self.webEngineView.load(self.local_url)
-            print("LOCAL LOADED")
-            self.Cost_line_edit.setText(str(cost))
+        if not G.makeDS(G.graph, self.Directed_Button.isChecked()):
+            self.Error_lineedit.setText("Error in making graph data structure")
+            return
+        print("DS MADE")
+        print(self.Start_line_edit.text(), "Start")
+        start = self.Start_line_edit.text()
+        G.makeGoalsList(self.goal_lineEdit.text())
+        print(G.goals, "Goal")
+        G.makeDS(G.graph, self.Directed_Button.isChecked())
+        parent_map , shortest_path,vis_nodes = Algo.Uniform_Cost_search(G.graphDS,G.unvisited,start)
+        if parent_map =={}:
+            self.Cost_line_edit.setText("infinity")
+            return
+        min_goal_cost=1e6
+        min_goal = "X"
+        for goal in G.goals:
+            if shortest_path[goal]<=min_goal_cost:
+                min_goal_cost= shortest_path[goal]
+                min_goal = goal
+
+
+        self.Cost_line_edit.setText(str(min_goal_cost))
+        path = Algo.dijkstra_result(parent_map,shortest_path,start,min_goal)
+        print("PATH",path,G.graphDS)
+
+        if self.Directed_Button.isChecked():
+            print("Directed")
+            print(G.graphDS)
+            gds = G.graphDS
+            self.color_path_dir(path,gds,vis_nodes)
+        else:
+            print("UNDIRECTED")
+            self.color_path_dir(path,G.graphDS,vis_nodes)
+        self.webEngineView.load(self.local_url)
+        print("LOCAL LOADED")
 
     def A_star_clicked(self):
         print("A* CLICKED")
@@ -734,15 +746,16 @@ class Ui_MainWindow(object):
             self.Cost_line_edit.setText("ENTER VALID START/END/Heuristics")
             return
         if G.makeDS(G.graph,self.Directed_Button.isChecked()):
-            if G.weighted==False:
-                self.Cost_line_edit.setText("Cost cant be determined")
-                return
             print("DS MADE")
             print(self.Start_line_edit.text(), "Start")
             start = self.Start_line_edit.text()
-            print(self.goal_lineEdit.text(), "Goal")
-            goal = self.goal_lineEdit.text()
-            path,cost,vis_nodes = (Algo.A_star_search(G.graphDS,G.unvisited,start,goal,G.heuristic_dict))
+            G.makeGoalsList(self.goal_lineEdit.text())
+            print(G.goals, "Goal")
+            try:
+                path,cost,vis_nodes = (Algo.A_star_search(G.graphDS,G.unvisited,start,G.goals,G.heuristic_dict))
+            except:
+                self.Error_lineedit.setText("Cant process A* algorithm")
+                return
             print("PATH",path,G.graphDS)
 
             if self.Directed_Button.isChecked():
@@ -756,6 +769,9 @@ class Ui_MainWindow(object):
             self.webEngineView.load(self.local_url)
             print("LOCAL LOADED")
             self.Cost_line_edit.setText(str(cost))
+        else:
+            self.Error_lineedit.setText("Error <<cant make graph data structure>>")
+            return
 
 
     def GreedyClicked(self):
@@ -773,11 +789,21 @@ class Ui_MainWindow(object):
             self.Error_lineedit.setText("Make sure Heuristic list in Node Heuristic format <<char int>> and not empty")
             return
 
+        try:
+
+            for i in G.unvisited:
+                G.heuristic_dict[i]
+
+        except:
+            self.Error_lineedit.setText("Enter all Nodes Heuristics")
+            return
+
         G.makeDS(G.graph,self.Directed_Button.isChecked())
         if self.Start_line_edit.text() == "" or self.goal_lineEdit.text()=="":
             self.Cost_line_edit.setText("ENTER VALID START/END")
             return
-        path,vis_nodes = Algo.greedy_Search(self.Start_line_edit.text(),self.goal_lineEdit.text(),G.heuristic_dict,G.graphDS)
+        G.makeGoalsList(self.goal_lineEdit.text())
+        path,vis_nodes = Algo.greedy_Search(self.Start_line_edit.text(),G.goals,G.heuristic_dict,G.graphDS)
         print("path inside GReedy clicked",path)
         cost = 0
         # change color of nodes and edges
@@ -798,7 +824,7 @@ class Ui_MainWindow(object):
             print("here")
         except:
             self.Error_lineedit.setText("Error#3 Invalid Path")
-        self.color_path(path,vis_nodes)
+        self.color_path_dir(path,G.graphDS,vis_nodes)
         self.webEngineView.load(self.local_url)
         print("LOCAL LOADED")
 
