@@ -309,12 +309,17 @@ class Ui_MainWindow(object):
         ## Clear Error
         self.Error_lineedit.setText(" ")
     def Export_Clicked(self):
+        ## Clear Error
+        self.Error_lineedit.setText(" ")
         with open("Exported_Text.txt", 'w') as f:
             f.write(self.TextEntry.toPlainText())
         EXP_GRAPH = main.g
         EXP_GRAPH.save_graph("Exported_graph.html")
 
     def DFS_clicked(self):
+        ## Clear Error
+        self.Error_lineedit.setText(" ")
+
         if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "":
             self.Error_lineedit.setText("ENTER VALID START/END")
             return
@@ -363,6 +368,8 @@ class Ui_MainWindow(object):
         self.webEngineView.load(self.local_url)
 
     def LimDFS_clicked(self):
+        ## Clear Error
+        self.Error_lineedit.setText(" ")
         ## get adj_list
         if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "" or self.Limited_dfs_lineEdit.text()=="":
             self.Error_lineedit.setText("ENTER VALID START/END")
@@ -416,6 +423,8 @@ class Ui_MainWindow(object):
 ##
 
     def Itr_deep_clicked(self):
+        ## Clear Error
+        self.Error_lineedit.setText(" ")
         ##COLOR PATH DIR
         ## get adj_list
         if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "" or self.iterative_deep_iter_linde_edit.text()=="" or self.Limit_Iterative_deepening_line_edit.text()=="":
@@ -478,11 +487,13 @@ class Ui_MainWindow(object):
         # change color of nodes and edges
         self.color_path_dir(path,graphDs,vis_nodes)
         self.webEngineView.load(self.local_url)
-
+        ##
 
 
 
     def BFS_clicked(self):
+        ## Clear Error
+        self.Error_lineedit.setText(" ")
         ## get adj_list
         print("BFS CLICKED")
         if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "":
@@ -695,6 +706,9 @@ class Ui_MainWindow(object):
 
 
     def UC_clicked(self):
+        ## Clear Error
+        self.Error_lineedit.setText(" ")
+
         print("UC CLICKED")
         if self.Start_line_edit.text() == "" or self.goal_lineEdit.text() == "":
             self.Error_lineedit.setText("ENTER VALID START/END")
@@ -737,6 +751,9 @@ class Ui_MainWindow(object):
         print("LOCAL LOADED")
 
     def A_star_clicked(self):
+        ## Clear Error
+        self.Error_lineedit.setText(" ")
+
         print("A* CLICKED")
         G.makeDS(G.graph,self.Directed_Button.isChecked())
         lines = self.Heuristic_Text_entry.toPlainText().splitlines()
@@ -775,6 +792,9 @@ class Ui_MainWindow(object):
 
 
     def GreedyClicked(self):
+        ## Clear Error
+        self.Error_lineedit.setText(" ")
+
 
         try:
             lines = self.Heuristic_Text_entry.toPlainText().splitlines()
