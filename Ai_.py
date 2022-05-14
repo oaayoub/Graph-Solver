@@ -487,7 +487,7 @@ class Ui_MainWindow(object):
         # change color of nodes and edges
         self.color_path_dir(path,graphDs,vis_nodes)
         self.webEngineView.load(self.local_url)
-
+        ##
 
 
 
