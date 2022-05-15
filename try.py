@@ -45,3 +45,7 @@ def trial(x):
 L = [('2', 7, ['1', '2']), ('7', 5, ['1', '7'])]
 print(Algo.Sort(L))
 
+with open("Last_graph.txt") as Data:
+    D = Data.read()
+for i in D:
+    print(int(D)+1)

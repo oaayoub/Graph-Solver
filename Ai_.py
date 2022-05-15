@@ -1,10 +1,11 @@
-from PyQt5 import QtCore, QtGui, QtWidgets, QtWebEngineWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets, QtWebEngineWidgets, QtTest
 import os
-
+import itertools
 import Algo
 import main, Graph
 from pyvis.network import Network
 import sys
+import time
 G = Graph.GraphDS("default")
 print(G.graph)
 
@@ -311,10 +312,22 @@ class Ui_MainWindow(object):
     def Export_Clicked(self):
         ## Clear Error
         self.Error_lineedit.setText(" ")
-        with open("Exported_Text.txt", 'w') as f:
+
+        def unique_file(basename, ext):
+            actualname = "%s.%s" % (basename, ext)
+            c = itertools.count()
+            while os.path.exists(actualname):
+                actualname = "%s (%d).%s" % (basename, next(c), ext)
+            return actualname
+
+        #Exported_Text
+        print("before catastrophe")
+        print (unique_file("Exported_Text","txt"))
+        with open(unique_file("Exported_Text","txt"), 'w') as f:
             f.write(self.TextEntry.toPlainText())
         EXP_GRAPH = main.g
-        EXP_GRAPH.save_graph("Exported_graph.html")
+        HTML = unique_file("Exported_graph","html")
+        EXP_GRAPH.save_graph(HTML)
 
     def DFS_clicked(self):
         ## Clear Error
@@ -459,35 +472,46 @@ class Ui_MainWindow(object):
         graphDs =G.graphDS
         print("BEFORE STORM")
         Algo.VIS_NODES_ALGO=[]
-        ##ERROR NON INTEGERS
-        try:
-            Flag,path,vis_nodes = Algo.Itr_Lim_DFS(G.adj_list, S, goals, Max_dep, step)
-        except:
-            self.Error_lineedit.setText("getting path error")
-        print(path,"Iter Limited DFS DONE", vis_nodes)
-        cost = 0
-        # change color of nodes and edges
-        graphDs = G.graphDS
-        print(path,"path")
-        try:
-            for i in range(len(path)-1):
-                for j in graphDs.get(path[i]):
-                    print(j,"i")
-                    print(j[0],"i[0]")
-                    print(j[1], "i[1]")
-                    print(j[0],path[i+1],"similarity")
-                    if j[0] == path[i+1]:
-                        print("here")
-                        cost+=int(j[1])
-            print(cost,"COST")
-            self.Cost_line_edit.setText(str(cost))
-            print("here")
-        except:
-            self.Error_lineedit.setText("Error#3 Invalid Path")
-        # change color of nodes and edges
-        self.color_path_dir(path,graphDs,vis_nodes)
-        self.webEngineView.load(self.local_url)
-        ##
+        #Flag,path,vis_nodes = Algo.Limited_DFS(G.adj_list,self.Start_line_edit.text(),G.goals,int(self.Limited_dfs_lineEdit.text()),0,visited=[],path=[],extras=[])
+        counter =step
+        while counter <= Max_dep:
+            try:
+                Algo.VIS_NODES_ALGO=[]
+                Flag,path,vis_nodes = Algo.Limited_DFS(G.adj_list,self.Start_line_edit.text(),G.goals,counter,0,visited=[],path=[],extras=[])
+                print("DONE",counter)
+            except:
+                self.Error_lineedit.setText("getting path error")
+            print(path,"Iter Limited DFS DONE", vis_nodes)
+            cost = 0
+            # change color of nodes and edges
+            graphDs = G.graphDS
+            print(path,"path")
+            try:
+                for i in range(len(path)-1):
+                    for j in graphDs.get(path[i]):
+                        print(j,"i")
+                        print(j[0],"i[0]")
+                        print(j[1], "i[1]")
+                        print(j[0],path[i+1],"similarity")
+                        if j[0] == path[i+1]:
+                            print("here")
+                            cost+=int(j[1])
+                print(cost,"COST")
+                self.Cost_line_edit.setText(str(cost))
+                print("here")
+            except:
+                self.Error_lineedit.setText("Error#3 Invalid Path")
+            # change color of nodes and edges
+            self.color_path_dir(path,graphDs,vis_nodes)
+            self.webEngineView.load(self.local_url)
+
+            loop = QtCore.QEventLoop()
+            QtCore.QTimer.singleShot(4000, loop.quit)
+            loop.exec_()
+            counter += step
+
+            if Flag:
+                break
 
 
 
