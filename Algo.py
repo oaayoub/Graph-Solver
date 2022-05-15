@@ -95,7 +95,7 @@ def Limited_DFS(graph, S, G, li, lv, visited=[], path=[], extras=[]):
                 for i in graph[S]:
                     print("HERE 4")
                     # print(i,"Children")
-                    if Limited_DFS(graph, i, G, li, lv + 1, visited, path)[0]:
+                    if Limited_DFS(graph, i, G, li, lv + 1, visited, path)[0] and (lv+1) <= li:
                         print(path, "Path")
                         print("limited dfs working")
                         return True, path, VIS_NODES_ALGO
