@@ -312,12 +312,15 @@ class Ui_MainWindow(object):
     def Export_Clicked(self):
         ## Clear Error
         self.Error_lineedit.setText(" ")
-
+        main_dir = os.getcwd()
+        os.chdir(r"C:\Users\amray\PycharmProjects\pythonProject3\Export")
+        print(os.getcwd(),"inside EXPORT")
         def unique_file(basename, ext):
             actualname = "%s.%s" % (basename, ext)
             c = itertools.count()
             while os.path.exists(actualname):
-                actualname = "%s (%d).%s" % (basename, next(c), ext)
+                actualname = "%s (%d).%s" % (basename, next(c) , ext)
+                #next(c) == c++
             return actualname
 
         #Exported_Text
@@ -328,6 +331,8 @@ class Ui_MainWindow(object):
         EXP_GRAPH = main.g
         HTML = unique_file("Exported_graph","html")
         EXP_GRAPH.save_graph(HTML)
+        os.chdir(main_dir)
+        print(main_dir ,"OUTSIDE EXPORT")
 
     def DFS_clicked(self):
         ## Clear Error
