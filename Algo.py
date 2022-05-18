@@ -139,7 +139,7 @@ def Uniform_Cost_search(graph, graph_nodes, S):
     # initiating shortest path values
     for i in unvisited:
         VIS_NODES_ALGO.append(i)
-        shortest_path[i] = 1e6
+        shortest_path[i] = 1e9
     shortest_path[S] = 0
     print(1)
     print(2)
