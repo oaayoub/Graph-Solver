@@ -72,7 +72,7 @@ class Ui_MainWindow(object):
         self.goal_lineEdit.setGeometry(QtCore.QRect(160, 630, 861, 20))
         self.goal_lineEdit.setObjectName("goal_lineEdit")
         self.Start_label = QtWidgets.QLabel(self.centralwidget)
-        self.Start_label.setGeometry(QtCore.QRect(30, 630, 41, 20))
+        self.Start_label.setGeometry(QtCore.QRect(20, 630, 41, 20))
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         self.Start_label.setFont(font)
