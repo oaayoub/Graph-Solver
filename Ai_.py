@@ -313,7 +313,7 @@ class Ui_MainWindow(object):
         ## Clear Error
         self.Error_lineedit.setText(" ")
         main_dir = os.getcwd()
-        os.chdir(r"C:\Users\amray\PycharmProjects\pythonProject3\Export")
+        os.chdir(main_dir+"\Export")
         print(os.getcwd(),"inside EXPORT")
         def unique_file(basename, ext):
             actualname = "%s.%s" % (basename, ext)
@@ -356,7 +356,7 @@ class Ui_MainWindow(object):
             path = Algo.DFS(G.adj_list,self.Start_line_edit.text(),G.goals,visited=[],path=[])
 
         except:
-            self.Error_lineedit.setText("Make Sure Node Exists")
+            self.Error_lineedit.setText("Error getting DFS path")
             return
 
         print(path,"DFS DONE",Algo.VIS_NODES_ALGO)
@@ -409,7 +409,11 @@ class Ui_MainWindow(object):
             self.Error_lineedit.setText("Enter integer values in <Limit>")
             return
 
-        Flag,path,vis_nodes = Algo.Limited_DFS(G.adj_list,self.Start_line_edit.text(),G.goals,int(self.Limited_dfs_lineEdit.text()),0,visited=[],path=[],extras=[])
+        try:
+            Flag,path,vis_nodes = Algo.Limited_DFS(G.adj_list,self.Start_line_edit.text(),G.goals,int(self.Limited_dfs_lineEdit.text()),0,visited=[],path=[],extras=[])
+        except:
+            self.Error_lineedit.setText("Error getting Lim DFS path")
+            return
         print(path,"Limited DFS DONE",vis_nodes)
         G.makeDS(G.graph,self.Directed_Button.isChecked())
         graphDs = G.graphDS
@@ -485,7 +489,7 @@ class Ui_MainWindow(object):
                 Flag,path,vis_nodes = Algo.Limited_DFS(G.adj_list,self.Start_line_edit.text(),G.goals,counter,0,visited=[],path=[],extras=[])
                 print("DONE",counter)
             except:
-                self.Error_lineedit.setText("getting path error")
+                self.Error_lineedit.setText("getting path itr deep error")
             print(path,"Iter Limited DFS DONE", vis_nodes)
             cost = 0
             # change color of nodes and edges
@@ -534,7 +538,11 @@ class Ui_MainWindow(object):
         print(self.Start_line_edit.text(),"Star")
         G.makeGoalsList(self.goal_lineEdit.text())
         print(G.goals,"Goal")
-        temp,vis_nodes = Algo.BFS(G.adj_list,self.Start_line_edit.text(),G.goals,Queue=[],visited=[],path=[])
+        try:
+            temp,vis_nodes = Algo.BFS(G.adj_list,self.Start_line_edit.text(),G.goals,Queue=[],visited=[],path=[])
+        except:
+            self.Error_lineedit.setText("Error getting BFS path")
+            return
         print(temp,"BFS DONE")
         # change color of nodes and edges
         G.makeDS(G.graph,self.Directed_Button.isChecked())
@@ -752,20 +760,28 @@ class Ui_MainWindow(object):
         G.makeGoalsList(self.goal_lineEdit.text())
         print(G.goals, "Goal")
         G.makeDS(G.graph, self.Directed_Button.isChecked())
-        parent_map , shortest_path,vis_nodes = Algo.Uniform_Cost_search(G.graphDS,G.unvisited,start)
+        try:
+            parent_map, shortest_path, vis_nodes = Algo.Uniform_Cost_search(G.graphDS, G.unvisited, start)
+        except:
+            self.Error_lineedit.setText("Error getting Uniform cost path")
+            return
         if parent_map =={}:
             self.Cost_line_edit.setText("infinity")
             return
-        min_goal_cost=1e6
+        min_goal_cost=1e9
         min_goal = "X"
         for goal in G.goals:
             if shortest_path[goal]<=min_goal_cost:
                 min_goal_cost= shortest_path[goal]
                 min_goal = goal
 
-
+        print("min goal", min_goal, ":::", min_goal_cost)
         self.Cost_line_edit.setText(str(min_goal_cost))
-        path = Algo.dijkstra_result(parent_map,shortest_path,start,min_goal)
+        try:
+            path = Algo.dijkstra_result(parent_map,shortest_path,start,min_goal)
+        except:
+            self.Error_lineedit.setText("cant get UC cost <make sure goal is reachable>")
+            return
         print("PATH",path,G.graphDS)
 
         if self.Directed_Button.isChecked():
@@ -852,7 +868,11 @@ class Ui_MainWindow(object):
             self.Cost_line_edit.setText("ENTER VALID START/END")
             return
         G.makeGoalsList(self.goal_lineEdit.text())
-        path,vis_nodes = Algo.greedy_Search(self.Start_line_edit.text(),G.goals,G.heuristic_dict,G.graphDS)
+        try:
+            path,vis_nodes = Algo.greedy_Search(self.Start_line_edit.text(),G.goals,G.heuristic_dict,G.graphDS)
+        except:
+            self.Error_lineedit.setText("Error Getting greedy path")
+            return
         print("path inside GReedy clicked",path)
         cost = 0
         # change color of nodes and edges
