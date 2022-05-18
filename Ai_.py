@@ -105,7 +105,7 @@ class Ui_MainWindow(object):
         self.Limit_Iterative_deepening_line_edit.setGeometry(QtCore.QRect(570, 570, 51, 20))
         self.Limit_Iterative_deepening_line_edit.setObjectName("Limit_Iterative_deepening_line_edit")
         self.Limit_iterative_deepening_label = QtWidgets.QLabel(self.centralwidget)
-        self.Limit_iterative_deepening_label.setGeometry(QtCore.QRect(500, 570, 61, 21))
+        self.Limit_iterative_deepening_label.setGeometry(QtCore.QRect(490, 570, 71, 21))
         font = QtGui.QFont()
         font.setFamily("Segoe UI Semibold")
         font.setPointSize(8)
