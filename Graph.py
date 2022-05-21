@@ -112,6 +112,9 @@ class GraphDS:
         print(self.graphDS)
         return True
     def makeHeuristicsList(self,lines):
+        '''N 10
+A 50
+X E'''
         self.heuristic_valid =True
         self.heuristic_valid_long = False
         self.heuristic_dict={}

@@ -50,8 +50,8 @@
         
 
         // parsing and collecting nodes and edges from the python
-        nodes = new vis.DataSet([{"id": "1", "label": "1", "shape": "dot"}, {"id": "2", "label": "2", "shape": "dot"}, {"id": "3", "label": "3", "shape": "dot"}]);
-        edges = new vis.DataSet([{"from": "1", "to": "2"}, {"from": "2", "label": "1", "to": "3", "weight": 1}]);
+        nodes = new vis.DataSet([{"color": "#3452F9", "id": "1", "label": "1", "shape": "dot"}, {"color": "#F4D03F", "id": "12", "label": "12", "shape": "dot"}, {"color": "#35DE4E", "id": "2", "label": "2", "shape": "dot", "title": "30"}, {"color": "#35DE4E", "id": "3", "label": "3", "shape": "dot"}, {"color": "#35DE4E", "id": "4", "label": "4", "shape": "dot"}, {"color": "#35DE4E", "id": "5", "label": "5", "shape": "dot"}, {"color": "#35DE4E", "id": "6", "label": "6", "shape": "dot"}, {"color": "#E33440", "id": "7", "label": "7", "shape": "dot"}, {"color": "#E33440", "id": "8", "label": "8", "shape": "dot"}, {"color": "#E33440", "id": "9", "label": "9", "shape": "dot"}, {"color": "#E33440", "id": "10", "label": "10", "shape": "dot"}, {"color": "#E33440", "id": "11", "label": "11", "shape": "dot"}]);
+        edges = new vis.DataSet([{"arrows": "to", "color": "#35DE4E", "from": "1", "label": 1, "to": "2"}, {"arrows": "to", "color": "#35DE4E", "from": "2", "label": 1, "to": "3"}, {"arrows": "to", "color": "#35DE4E", "from": "3", "label": 1, "to": "4"}, {"arrows": "to", "color": "#35DE4E", "from": "4", "label": 1, "to": "5"}, {"arrows": "to", "color": "#35DE4E", "from": "5", "label": 1, "to": "6"}, {"arrows": "to", "color": "#35DE4E", "from": "6", "label": 1, "to": "12"}, {"arrows": "to", "from": "1", "label": "20", "to": "7", "weight": 20}, {"arrows": "to", "from": "7", "to": "8"}, {"arrows": "to", "from": "8", "to": "9"}, {"arrows": "to", "from": "9", "to": "10"}, {"arrows": "to", "from": "10", "to": "11"}, {"arrows": "to", "from": "11", "to": "12"}]);
 
         // adding nodes and edges to the graph
         data = {nodes: nodes, edges: edges};
@@ -65,8 +65,8 @@
             "inherit": false
         },
         "smooth": {
-            "enabled": false,
-            "type": "continuous"
+            "enabled": true,
+            "type": "dynamic"
         }
     },
     "interaction": {
