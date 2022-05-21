@@ -2,14 +2,13 @@ import collections
 
 VIS_NODES_ALGO = []
 
-
+['1','2','3','4']
 def DFS(graph, S, G, visited=[], path=[]):
     print("DFS ALGO")
     print(S)
     VIS_NODES_ALGO.append(S)
     print("HERE")
-    if S not in graph:
-        print("ERROR NOT IN GRAPH")
+
     path.append(S)
     print("HERE")
 
@@ -31,7 +30,7 @@ def DFS(graph, S, G, visited=[], path=[]):
         visited.append(S)
         # print(S)
         if S in graph:
-            for i in graph[S]:
+            for i in graph[S]: #search in all children
                 print(i, "Children")
                 if DFS(graph, i, G, visited, path):
                     print(path, "Path DFS ALGO")
@@ -43,7 +42,7 @@ def DFS(graph, S, G, visited=[], path=[]):
 
 def BFS(graph, S, G, Queue=[], visited=[], path=[]):
     extras = []
-    queue = [(S, [S])]
+    queue = [(S, [S])] #S , [S]
     visited = set()
 
     while queue:
@@ -51,14 +50,15 @@ def BFS(graph, S, G, Queue=[], visited=[], path=[]):
         '''if s in G:
             return path, extras'''
 
-        for j in G:
-            if s == j:
+        for goal in G:
+            if s == goal:
                 return path, extras
 
         extras.append(s)
         visited.add(s)
         if s in graph:
             for node in graph[s]:
+                #search cildren
                 '''
                 if node == G:
                     return path + [G] , extras
@@ -68,7 +68,6 @@ def BFS(graph, S, G, Queue=[], visited=[], path=[]):
                     queue.append((node, path + [node]))
 
     return [], extras
-
 
 def Limited_DFS(graph, S, G, li, lv, visited=[], path=[], extras=[]):
     print("limited dfs started", li, " ", lv)
@@ -125,13 +124,13 @@ def Itr_Lim_DFS(graph, S, G, max_depth, step):
 def Uniform_Cost_search(graph, graph_nodes, S):
     VIS_NODES_ALGO = []
     print("INSIDE ALGO UC")
-    mygraph = graph
+    mygraph = graph #adjacency listt
     print(graph, "GRAPH")
     print("IA GRAPH MADE")
-    unvisited = graph_nodes
+    unvisited = graph_nodes  #list of all node [n1,n2,n3,......]
     print("IA GRAPH unvisited", unvisited)
     # cost of visiting node
-    shortest_path = {}
+    shortest_path = {} #S: 10
     # shortest path to node #road
     previous_nodes = {}
     curr_min_node = None
@@ -152,18 +151,22 @@ def Uniform_Cost_search(graph, graph_nodes, S):
                 current_min_node = node
             elif shortest_path[node] < shortest_path[current_min_node]:
                 current_min_node = node
+        #[n1:2000, n2:3000, N3:10] ->curr min node =N3
         print(4)
         print("current node", current_min_node)
         # if graph is directed and node to have outhoing edges
+        #######double check
         if not (current_min_node in mygraph):
             print(current_min_node, "NOT")
             unvisited.remove(current_min_node)
             continue
+        ##########
         # if node have only one outgoing edge it puts it in list
         if not isinstance(mygraph[current_min_node], list):
             neighbors = [mygraph[current_min_node]]
         else:
-            neighbors = mygraph[current_min_node]
+            neighbors = mygraph[current_min_node] #[N2:30,N3:40] ->N2:30 ->key N2 -> val
+        ####################
         print(neighbors, "NEIGHBORS")
         print(5)
         # update the values of children
@@ -179,14 +182,16 @@ def Uniform_Cost_search(graph, graph_nodes, S):
             if tentative_value < shortest_path[key]:
                 shortest_path[key] = tentative_value
                 # We also update the best path to the current node
-                previous_nodes[key] = current_min_node
+                previous_nodes[key] = current_min_node  #{N2:N1}
+
+
         unvisited.remove(current_min_node)
         print(9)
     print(10)
     print(shortest_path)
     print(previous_nodes)
     print(VIS_NODES_ALGO, "EXTRAS")
-    return (previous_nodes, shortest_path, VIS_NODES_ALGO)
+    return (previous_nodes, shortest_path, VIS_NODES_ALGO) #ShortPath{N1:10,N2:20} Pn{N1:N0,N2:N0}
 
 
 # sorting algorithm for list of tuples according to value
@@ -199,6 +204,11 @@ def Sort_2(L):
 
 
 def dijkstra_result(parent_map, shortest_path, start, goal):
+    #goal N4,Start N0
+    #N4 -> N3
+    #N3 -> N2
+    #N2 -> N7
+    #N7 -> N0
     path = []
     node = goal
     while node != start:
@@ -212,10 +222,10 @@ def dijkstra_result(parent_map, shortest_path, start, goal):
 def A_star_search(graph, graph_nodes, S, G, heuristic):
     VIS_NODES_ALGO = []
     print("INSIDE A Star search")
-    mygraph = graph
+    mygraph = graph #adjacency list
     print(graph, "GRAPH")
     print("IA GRAPH MADE")
-    unvisited = graph_nodes
+    unvisited = graph_nodes #list of nodes
     print("IA GRAPH unvisited", unvisited)
     # cost of visiting node
     shortest_path = {}
@@ -243,10 +253,11 @@ def A_star_search(graph, graph_nodes, S, G, heuristic):
                     int(shortest_path[current_min_node]) + int(heuristic[current_min_node])):
                 current_min_node = node
                 print(current_min_node, "curr min node changed")
-
+        ####################
         if current_min_node == None:
             print("NO PATH")
             return
+        ###################
         print(4)
         print("current node", current_min_node)
         # if graph is directed and node to have outhoing edges
@@ -311,12 +322,14 @@ def greedy_Search(S, G, heuristics, DS):
         VIS_NODES_ALGO = []  # visited NODES
         print("inside Greedy FUNC")
         outgoingedes = {}
-        print(DS, "DS")
+        print(DS, "Data Structure")
         for i in DS:
             print(i, "i in DS")
             for j in DS[i]:
                 print(j, "of DS of i")
                 outgoingedes.setdefault(i, []).append((j[0]))
+                #DS[i] ->{n1:[n3,n2]}
+
 
         visited = [S]
         print(outgoingedes, "outgoing edges")

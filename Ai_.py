@@ -237,9 +237,10 @@ class Ui_MainWindow(object):
             self.Export_Button.clicked.connect(lambda: self.Export_Clicked())
         except:
             self.Error_lineedit.setText("Error")
+            return ###############
 
     def Phys_clicked(self):
-        if self.counterPhysics % 2 == 0:  # odd->ucnchecked
+        if self.counterPhysics % 2 == 0:
             self.counterPhysics = self.counterPhysics + 1
             main.g.toggle_physics(False)
             main.g.save_graph("graph.html")
@@ -550,7 +551,7 @@ class Ui_MainWindow(object):
         path = temp
         cost = 0
         # change color of nodes and edges
-        graphDs = G.graphDS
+        graphDs = G.graphDS #[A,B,C,D]
         print(path,"path")
         try:
             for i in range(len(path)-1):
@@ -659,7 +660,7 @@ class Ui_MainWindow(object):
 
         print("Here COLOR PATH 1")
 
-        print(path)
+        print(path) #2,3,4
         for i in path:
             if  str(i) in G.heuristic_dict:
                 print("COLOR PATH DIR 1")
